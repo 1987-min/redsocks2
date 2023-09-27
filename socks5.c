@@ -128,7 +128,7 @@ struct evbuffer *socks5_mkpassword_plain(const char *login, const char *password
 	return mkevbuffer(req, length);
 }
 
-struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_storage *destaddr)
+struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_storage *destaddr, const struct sockaddr_storage *clientaddr)
 {
 	if (destaddr->ss_family == AF_INET) {
 		struct {
@@ -143,6 +143,8 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 		req.head.addrtype = socks5_addrtype_ipv4;
 		req.ip.addr = addr->sin_addr.s_addr;
 		req.ip.port = addr->sin_port;
+		req.ip.caddr= clientaddr->sin_addr.s_addr;
+	    redsocks_log_error(client, LOG_NOTICE, "CADDR: %s", req.ip.caddr);
 		return mkevbuffer(&req, sizeof(req));
 	}
 	else {
@@ -164,7 +166,7 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 
 static struct evbuffer *socks5_mkconnect(redsocks_client *client)
 {
-	return socks5_mkcommand_plain(socks5_cmd_connect, &client->destaddr);
+	return socks5_mkcommand_plain(socks5_cmd_connect, &client->destaddr,&client->clientaddr);
 }
 
 static void socks5_write_cb(struct bufferevent *buffev, void *_arg)
