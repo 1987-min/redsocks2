@@ -130,12 +130,13 @@ struct evbuffer *socks5_mkpassword_plain(const char *login, const char *password
 
 struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_storage *destaddr, const struct sockaddr_storage *clientaddr)
 {
-	if (destaddr->ss_family == AF_INET) {
+	//if (destaddr->ss_family == AF_INET) {
 		struct {
 			socks5_req head;
 			socks5_addr_ipv4 ip;
 		} PACKED req;
 		const struct sockaddr_in * addr = (const struct sockaddr_in *)destaddr;
+		const struct sockaddr_in * addr1 = (const struct sockaddr_in *)clientaddr;
 
 		req.head.ver = socks5_ver;
 		req.head.cmd = socks5_cmd;
@@ -143,11 +144,11 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 		req.head.addrtype = socks5_addrtype_ipv4;
 		req.ip.addr = addr->sin_addr.s_addr;
 		req.ip.port = addr->sin_port;
-		req.ip.caddr= clientaddr->sin_addr.s_addr;
+		req.ip.caddr= addr1->sin_addr.s_addr;
 	    redsocks_log_error(client, LOG_NOTICE, "CADDR: %s", req.ip.caddr);
 		return mkevbuffer(&req, sizeof(req));
-	}
-	else {
+	//}
+	/*else {
 		struct {
 			socks5_req head;
 			socks5_addr_ipv6 ip;
@@ -160,8 +161,9 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 		req.head.addrtype = socks5_addrtype_ipv6;
 		req.ip.addr = addr->sin6_addr;
 		req.ip.port = addr->sin6_port;
+		req.ip.caddr= addr1->sin_addr.s_addr;
 		return mkevbuffer(&req, sizeof(req));
-	}
+	}*/
 }
 
 static struct evbuffer *socks5_mkconnect(redsocks_client *client)
