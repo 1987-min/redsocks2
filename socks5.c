@@ -146,7 +146,6 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 		req.ip.port = addr->sin_port;
 		//rmf add
 		req.ip.caddr= addr1->sin_addr.s_addr;
-	    redsocks_log_error(client, LOG_NOTICE, "CADDR: %s", req.ip.caddr);
 		return mkevbuffer(&req, sizeof(req));
 	//}
 	/*else {
