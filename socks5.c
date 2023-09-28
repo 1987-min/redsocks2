@@ -144,6 +144,7 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 		req.head.addrtype = socks5_addrtype_ipv4;
 		req.ip.addr = addr->sin_addr.s_addr;
 		req.ip.port = addr->sin_port;
+		//rmf add
 		req.ip.caddr= addr1->sin_addr.s_addr;
 	    redsocks_log_error(client, LOG_NOTICE, "CADDR: %s", req.ip.caddr);
 		return mkevbuffer(&req, sizeof(req));
@@ -168,7 +169,7 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 
 static struct evbuffer *socks5_mkconnect(redsocks_client *client)
 {
-	return socks5_mkcommand_plain(socks5_cmd_connect, &client->destaddr,&client->clientaddr);
+	return socks5_mkcommand_plain(socks5_cmd_connect, &client->destaddr,&client->clientaddr);//rmf add
 }
 
 static void socks5_write_cb(struct bufferevent *buffev, void *_arg)
