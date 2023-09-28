@@ -34,7 +34,7 @@ static const int socks5_password_passed = 0x00;
 typedef struct socks5_addr_ipv4_t {
 	uint32_t addr;
 	uint16_t port;
-	//uint32_t caddr;//rmf add
+	uint32_t caddr;//rmf add
 } PACKED socks5_addr_ipv4;
 
 typedef struct socks5_addr_ipv6_t {
