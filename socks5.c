@@ -164,10 +164,14 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 		req.head.addrtype = socks5_addrtype_ipv6;
 		req.ip.addr = addr->sin6_addr;
 		req.ip.port = addr->sin6_port;
-		req.ip.caddr= addr1->sin_addr.s_addr;
+	//	req.ip.caddr= addr1->sin_addr.s_addr;
 		return mkevbuffer(&req, sizeof(req));
 	}
 }
+
+
+
+
 
 static struct evbuffer *socks5_mkconnect(redsocks_client *client)
 {
