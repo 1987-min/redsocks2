@@ -105,7 +105,7 @@ static const int socks5_cmd_connect = 1;
 static const int socks5_cmd_bind = 2;
 static const int socks5_cmd_udp_associate = 3;
 //rmf add
-//struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_storage *destaddr, const struct sockaddr_storage *clientaddr);
+struct evbuffer *socks5_mkcommand_plains(int socks5_cmd, const struct sockaddr_storage *destaddr, const struct sockaddr_storage *clientaddr);
 struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_storage *destaddr);
 
 
