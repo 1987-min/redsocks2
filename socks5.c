@@ -171,7 +171,7 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 
 struct evbuffer *socks5_mkcommand_plains(int socks5_cmd, const struct sockaddr_storage *destaddr, const struct sockaddr_storage *clientaddr)
 {
-	//if (destaddr->ss_family == AF_INET) {
+	if (destaddr->ss_family == AF_INET) {
 		struct {
 			socks5_req head;
 			socks5_addr_ipv4 ip;
@@ -188,8 +188,8 @@ struct evbuffer *socks5_mkcommand_plains(int socks5_cmd, const struct sockaddr_s
 		//rmf add
 		req.ip.caddr= addr1->sin_addr.s_addr;
 		return mkevbuffer(&req, sizeof(req));
-	//}
-	/*else {
+	}
+	else {
 		struct {
 			socks5_req head;
 			socks5_addr_ipv6 ip;
@@ -204,7 +204,7 @@ struct evbuffer *socks5_mkcommand_plains(int socks5_cmd, const struct sockaddr_s
 		req.ip.port = addr->sin6_port;
 	//	req.ip.caddr= addr1->sin_addr.s_addr;
 		return mkevbuffer(&req, sizeof(req));
-	}*/
+	}
 }
 
 

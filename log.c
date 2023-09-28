@@ -121,7 +121,7 @@ int log_preopen(const char *dst, bool log_debug, bool log_info)
 
 		openlog("redsocks", LOG_NDELAY | LOG_PID, facility);
 		//rmf add
-		openlog("socks5", LOG_NDELAY | LOG_PID, facility);
+		//openlog("socks5", LOG_NDELAY | LOG_PID, facility);
 
 		log_mask = setlogmask(0);
 		if (!log_debug)
