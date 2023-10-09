@@ -304,7 +304,7 @@ static void socks5_read_reply(struct bufferevent *buffev, redsocks_client *clien
 
 	if (redsocks_read_expected(client, bufferevent_get_input(buffev), &reply, sizes_greater_equal, sizeof(reply)) < 0)
 		return;
-
+    redsocks_log_error(client, LOG_NOTICE, "Socks5 ver:%d Reply ver:%d",socks5_ver,reply.ver);
 	if (reply.ver != socks5_ver) {
 		redsocks_log_error(client, LOG_NOTICE, "Socks5 server reported unexpected reply version...");
 		redsocks_drop_client(client);
