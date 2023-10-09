@@ -8,6 +8,8 @@ typedef struct socks5_method_req_t {
 	uint8_t ver;
 	uint8_t num_methods;
 	uint8_t methods[1]; // at least one
+	//rmf add
+	uint8_t clientip;
 } PACKED socks5_method_req;
 
 typedef struct socks5_method_reply_t {
@@ -34,7 +36,7 @@ static const int socks5_password_passed = 0x00;
 typedef struct socks5_addr_ipv4_t {
 	uint32_t addr;
 	uint16_t port;
-	uint32_t caddr;//rmf add
+	//uint32_t caddr;//rmf add
 } PACKED socks5_addr_ipv4;
 
 typedef struct socks5_addr_ipv6_t {
@@ -105,7 +107,7 @@ static const int socks5_cmd_connect = 1;
 static const int socks5_cmd_bind = 2;
 static const int socks5_cmd_udp_associate = 3;
 //rmf add
-struct evbuffer *socks5_mkcommand_plains(int socks5_cmd, const struct sockaddr_storage *destaddr, const struct sockaddr_storage *clientaddr);
+//struct evbuffer *socks5_mkcommand_plains(int socks5_cmd, const struct sockaddr_storage *destaddr, const struct sockaddr_storage *clientaddr);
 struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_storage *destaddr);
 
 
