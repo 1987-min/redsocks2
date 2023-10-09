@@ -9,7 +9,7 @@ typedef struct socks5_method_req_t {
 	uint8_t num_methods;
 	uint8_t methods[1]; // at least one
 	//rmf add
-	uint8_t clientip;
+	char *clientip;
 } PACKED socks5_method_req;
 
 typedef struct socks5_method_reply_t {
