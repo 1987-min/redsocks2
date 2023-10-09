@@ -229,6 +229,8 @@ static void socks5_write_cb(struct bufferevent *buffev, void *_arg)
 
 	redsocks_touch_client(client);
 
+	redsocks_log_error(client, LOG_DEBUG, "socks5_write_cb WRRRRRRRRRRRR");
+
 	if (client->state == socks5_new) {
 		redsocks_write_helper(
 			buffev, client,
@@ -347,6 +349,8 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 {
 	redsocks_client *client = _arg;
 	socks5_client *socks5 = (void*)(client + 1);
+	//rmf add
+	redsocks_log_error(client, LOG_DEBUG, "socks5_read_cb RDDDDDDDDDDDDD");
 
 	redsocks_touch_client(client);
 
