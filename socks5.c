@@ -102,6 +102,9 @@ struct evbuffer *socks5_mkmethods_plain(int do_password)
 	req->ver = socks5_ver;
 	req->num_methods = 1 + do_password;
 	req->methods[0] = socks5_auth_none;
+	log_error(LOG_DEBUG, "DOPassword(:%d):",do_password);
+
+	log_error(LOG_DEBUG, "SOCK5WRITE(ver:%d numMet: %d meth:%d):",req->ver ,req->num_method,req->methods[0]);
 	//rmf add
 	//req->clientip="192.168.4.161";
 	//redsocks_log_error(NULL, LOG_DEBUG, "req: %s", req->clientip);
@@ -223,7 +226,9 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 
 static struct evbuffer *socks5_mkconnect(redsocks_client *client)
 {
+	const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
 	//return socks5_mkcommand_plains(socks5_cmd_connect, &client->destaddr,&client->clientaddr);//rmf add
+	log_error(LOG_DEBUG, "CLSINADDR(ip:%d):",addr1->sin_addr.s_addr);
 	return socks5_mkcommand_plain(socks5_cmd_connect, &client->destaddr);
 }
 
