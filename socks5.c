@@ -103,7 +103,7 @@ struct evbuffer *socks5_mkmethods_plain(int do_password)
 	req->num_methods = 1 + do_password;
 	req->methods[0] = socks5_auth_none;
 	//rmf add
-	req->clientip="192.168.4.161";
+	//req->clientip="192.168.4.161";
 	//redsocks_log_error(NULL, LOG_DEBUG, "req: %s", req->clientip);
 
 	if (do_password)
@@ -152,7 +152,10 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 		req.head.reserved = 0;
 		req.head.addrtype = socks5_addrtype_ipv4;
 		req.ip.addr = addr->sin_addr.s_addr;
+		
+		//redsocks_log_error(client, LOG_DEBUG, "socks5_write_cb WRRRRRRRRRRRR");
 		req.ip.port = addr->sin_port;
+		log_error(LOG_DEBUG, "CLIIIIIEEEENT4(ip:%d port: %d):",req.ip.addr,req.ip.port);
 		//rmf add
 		//req.ip.caddr= addr1->sin_addr.s_addr;
 		return mkevbuffer(&req, sizeof(req));
@@ -170,6 +173,7 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 		req.head.addrtype = socks5_addrtype_ipv6;
 		req.ip.addr = addr->sin6_addr;
 		req.ip.port = addr->sin6_port;
+		log_error(LOG_DEBUG, "CLIIIIIEEEENT6(ip:%d port: %d):",req.ip.addr,req.ip.port);
 	//	req.ip.caddr= addr1->sin_addr.s_addr;
 		return mkevbuffer(&req, sizeof(req));
 	}
