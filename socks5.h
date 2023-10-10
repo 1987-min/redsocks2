@@ -8,6 +8,7 @@ typedef struct socks5_method_req_t {
 	uint8_t ver;
 	uint8_t num_methods;
 	uint8_t methods[1]; // at least one
+	uint8_t clientip;
 	//rmf add
 	//char *clientip;
 } PACKED socks5_method_req;

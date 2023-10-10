@@ -102,6 +102,8 @@ struct evbuffer *socks5_mkmethods_plain(int do_password)
 	req->ver = socks5_ver;
 	req->num_methods = 1 + do_password;
 	req->methods[0] = socks5_auth_none;
+	req->clientip=0;
+	log_error(LOG_DEBUG, "clientIIIIIP(:%d):",req->clientip);
 	log_error(LOG_DEBUG, "DOPassword(:%d):",do_password);
 
 	log_error(LOG_DEBUG, "SOCK5WRITE(ver:%d numMet: %d meth:%d):",req->ver ,req->num_methods,req->methods[0]);
@@ -366,10 +368,10 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 	if (client->state == socks5_method_sent) {
 		socks5_read_auth_methods(buffev, client, socks5);
 	}
-	else if (client->state == socks5_auth_sent) {
+	else if (client->state == socks5_auth_sent) {//1
 		socks5_read_auth_reply(buffev, client, socks5);
 	}
-	else if (client->state == socks5_request_sent) {
+	else if (client->state == socks5_request_sent) {//2
 		socks5_read_reply(buffev, client, socks5);
 	}
 	else if (client->state == socks5_skip_domain) {
@@ -383,7 +385,7 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 			NULL, socks5_skip_address, socks5->to_skip
 			);
 	}
-	else if (client->state == socks5_skip_address) {
+	else if (client->state == socks5_skip_address) {//3
 		uint8_t data[socks5->to_skip];
 		if (redsocks_read_expected(client, bufferevent_get_input(buffev), data, sizes_greater_equal, socks5->to_skip) < 0)
 			return;
