@@ -104,7 +104,7 @@ struct evbuffer *socks5_mkmethods_plain(int do_password)
 	req->methods[0] = socks5_auth_none;
 	log_error(LOG_DEBUG, "DOPassword(:%d):",do_password);
 
-	log_error(LOG_DEBUG, "SOCK5WRITE(ver:%d numMet: %d meth:%d):",req->ver ,req->num_method,req->methods[0]);
+	log_error(LOG_DEBUG, "SOCK5WRITE(ver:%d numMet: %d meth:%d):",req->ver ,req->num_methods,req->methods[0]);
 	//rmf add
 	//req->clientip="192.168.4.161";
 	//redsocks_log_error(NULL, LOG_DEBUG, "req: %s", req->clientip);
