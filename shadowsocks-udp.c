@@ -43,6 +43,7 @@ typedef struct ss_instance_t {
 
 static int ss_is_valid_cred(const char *method, const char *password)
 {
+    log_error(LOG_DEBUG, "ss_is_valid_cred");
     if (!method || !password)
         return 0;
     if (strlen(method) > 255) {
@@ -62,6 +63,7 @@ static void ss_client_init(redudp_client *client)
 
 static void ss_client_fini(redudp_client *client)
 {
+    log_error(LOG_DEBUG, "ss_client_fini");
     ss_client *ssclient = (void*)(client + 1);
     if (ssclient->udprelay) {
         int fd = event_get_fd(ssclient->udprelay);
@@ -74,6 +76,7 @@ static void ss_client_fini(redudp_client *client)
 
 static void ss_forward_pkt(redudp_client *client, struct sockaddr* destaddr, void *data, size_t pktlen)
 {
+    log_error(LOG_DEBUG, "ss_forward_pkt");
     ss_client *ssclient = (void*)(client + 1);
     ss_instance * ss = (ss_instance *)(client->instance+1);
     struct sockaddr_storage * relayaddr = &client->instance->config.relayaddr;
@@ -149,6 +152,7 @@ static void ss_forward_pkt(redudp_client *client, struct sockaddr* destaddr, voi
 
 static void ss_pkt_from_server(int fd, short what, void *_arg)
 {
+    log_error(LOG_DEBUG, "ss_pkt_from_server");
     redudp_client *client = _arg;
     ss_client *ssclient = (void*)(client + 1);
     ss_instance * ss = (ss_instance *)(client->instance+1);
@@ -228,6 +232,7 @@ static int ss_ready_to_fwd(struct redudp_client_t *client)
 
 static void ss_connect_relay(redudp_client *client)
 {
+    log_error(LOG_DEBUG, "ss_connect_relay");
     ss_client *ssclient = (void*)(client + 1);
     struct sockaddr_storage * addr = &client->instance->config.relayaddr;
     int fd = -1;
@@ -273,6 +278,7 @@ fail:
 
 static int ss_instance_init(struct redudp_instance_t *instance)
 {
+     log_error(LOG_DEBUG, "ss_instance_init");
     ss_instance * ss = (ss_instance *)(instance+1);
     const redudp_config *config = &instance->config;
     char buf1[RED_INET_ADDRSTRLEN];
@@ -302,6 +308,7 @@ static int ss_instance_init(struct redudp_instance_t *instance)
 
 static void ss_instance_fini(struct redudp_instance_t *instance)
 {
+    log_error(LOG_DEBUG, "ss_instance_fini");
     ss_instance * ss = (ss_instance *)(instance+1);
     if (ss->buff) {
         free(ss->buff);

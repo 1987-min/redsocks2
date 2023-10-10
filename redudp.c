@@ -83,11 +83,13 @@ static void* root_bound_udp4 = NULL; // to avoid two binds to same IP:port
 
 static int bound_udp4_cmp(const void *a, const void *b)
 {
+    log_error(LOG_DEBUG, "bound_udp4_cmp");
     return memcmp(a, b, sizeof(struct bound_udp4_key));
 }
 
 static void bound_udp4_mkkey(struct bound_udp4_key *key, const struct sockaddr_in *addr)
 {
+    log_error(LOG_DEBUG, "bound_udp4_mkkey");
     memset(key, 0, sizeof(*key));
     key->sin_addr = addr->sin_addr;
     key->sin_port = addr->sin_port;
@@ -95,6 +97,7 @@ static void bound_udp4_mkkey(struct bound_udp4_key *key, const struct sockaddr_i
 
 static int bound_udp4_get(const struct sockaddr_in *addr)
 {
+    log_error(LOG_DEBUG, "bound_udp4_get");
     struct bound_udp4_key key;
     struct bound_udp4 *node, **pnode;
 
@@ -162,6 +165,7 @@ fail:
 
 static void bound_udp4_put(const struct sockaddr_in *addr)
 {
+     log_error(LOG_DEBUG, "bound_udp4_put");
     struct bound_udp4_key key;
     struct bound_udp4 **pnode, *node;
     void *parent;
@@ -190,6 +194,7 @@ static void bound_udp4_put(const struct sockaddr_in *addr)
  */
 static void bound_udp4_action(const void *nodep, const VISIT which, const int depth)
 {
+    log_error(LOG_DEBUG, "bound_udp4_action");
     time_t now;
     struct bound_udp4 *datap;
     void *parent;
@@ -220,11 +225,13 @@ static void bound_udp4_action(const void *nodep, const VISIT which, const int de
 
 static int do_tproxy(redudp_instance* instance)
 {
+    log_error(LOG_DEBUG, "do_tproxy");
     return instance->config.dest == NULL;
 }
 
 struct sockaddr_storage* get_destaddr(redudp_client *client)
 {
+    log_error(LOG_DEBUG, "get_destaddr");
     if (do_tproxy(client->instance))
         return &client->destaddr;
     else
@@ -236,6 +243,7 @@ struct sockaddr_storage* get_destaddr(redudp_client *client)
  */
 void redudp_drop_client(redudp_client *client)
 {
+    log_error(LOG_DEBUG, "redudp_drop_client");
     redudp_log_error(client, LOG_DEBUG, "Dropping client @ state: %d", client->state);
     enqueued_packet *q, *tmp;
 
@@ -257,6 +265,7 @@ void redudp_drop_client(redudp_client *client)
 
 void redudp_bump_timeout(redudp_client *client)
 {
+    log_error(LOG_DEBUG, "redudp_bump_timeout");
     struct timeval tv;
     tv.tv_sec = client->instance->config.udp_timeout;
     tv.tv_usec = 0;
@@ -270,6 +279,7 @@ void redudp_bump_timeout(redudp_client *client)
 void redudp_fwd_pkt_to_sender(redudp_client *client, void *buf, size_t len,
                               struct sockaddr_storage * srcaddr)
 {
+    log_error(LOG_DEBUG, "redudp_fwd_pkt_to_sender");
     size_t sent;
     int fd;
     redsocks_time(&client->last_relay_event);
@@ -305,6 +315,7 @@ static int redudp_enqeue_pkt(
     char *buf,
     size_t pktlen)
 {
+    log_error(LOG_DEBUG, "redudp_enqeue_pkt");
     enqueued_packet *q = NULL;
 
     if (client->queue_len >= client->instance->config.max_pktqueue) {
@@ -330,6 +341,7 @@ static int redudp_enqeue_pkt(
 
 void redudp_flush_queue(redudp_client *client)
 {
+    log_error(LOG_DEBUG, "redudp_flush_queue");
     enqueued_packet *q, *tmp;
     assert(client->instance->relay_ss->ready_to_fwd(client));
 
@@ -345,6 +357,7 @@ void redudp_flush_queue(redudp_client *client)
 
 static void redudp_timeout(int fd, short what, void *_arg)
 {
+    log_error(LOG_DEBUG, "redudp_timeout");
     redudp_client *client = _arg;
     redudp_log_error(client, LOG_DEBUG, "Client timeout. First: %li, last_client: %li, last_relay: %li.",
                      client->first_event, client->last_client_event, client->last_relay_event);
@@ -358,6 +371,7 @@ static void redudp_first_pkt_from_client(
     char *buf,
     size_t pktlen)
 {
+    log_error(LOG_DEBUG, "redudp_first_pkt_from_client");
     redudp_client *client = calloc(1, sizeof(*client)+self->relay_ss->payload_len);
     if (!client) {
         log_errno(LOG_WARNING, "calloc");
@@ -395,6 +409,7 @@ fail:
 
 static void redudp_pkt_from_client(int fd, short what, void *_arg)
 {
+    log_error(LOG_DEBUG, "redudp_pkt_from_client");
     redudp_instance *self = _arg;
     struct sockaddr_storage clientaddr, destaddr, *pdestaddr;
     ssize_t pktlen;
@@ -459,6 +474,7 @@ static list_head instances = LIST_HEAD_INIT(instances);
 
 static int redudp_onenter(parser_section *section)
 {
+    log_error(LOG_DEBUG, "redudp_onenter");
     // FIXME: find proper way to calulate instance_payload_len
     int instance_payload_len = 0;
     udprelay_subsys **ss;
@@ -499,6 +515,7 @@ static int redudp_onenter(parser_section *section)
 
 static int redudp_onexit(parser_section *section)
 {
+    log_error(LOG_DEBUG, "redudp_onexit");
     redudp_instance *instance = section->data;
     char * err = NULL;
 
@@ -584,6 +601,7 @@ static int redudp_onexit(parser_section *section)
 
 static int redudp_init_instance(redudp_instance *instance)
 {
+    log_error(LOG_DEBUG, "redudp_init_instance");
     /* FIXME: redudp_fini_instance is called in case of failure, this
      *        function will remove instance from instances list - result
      *        looks ugly.
@@ -686,6 +704,7 @@ fail:
  */
 static void redudp_fini_instance(redudp_instance *instance)
 {
+    log_error(LOG_DEBUG, "redudp_fini_instance");
     if (!list_empty(&instance->clients)) {
         redudp_client *tmp, *client = NULL;
 
@@ -718,11 +737,13 @@ static struct event * audit_event = NULL;
 
 static void redudp_audit(int sig, short what, void *_arg)
 {
+    log_error(LOG_DEBUG, "redudp_audit");
     twalk(root_bound_udp4, bound_udp4_action);
 }
 
 static int redudp_init()
 {
+    log_error(LOG_DEBUG, "redudp_init");
     redudp_instance *tmp, *instance = NULL;
     struct timeval audit_time;
     struct event_base * base = get_event_base();
@@ -747,6 +768,7 @@ fail:
 
 static int redudp_fini()
 {
+    log_error(LOG_DEBUG, "redudp_fini");
     redudp_instance *tmp, *instance = NULL;
 
     /* stop audit */
