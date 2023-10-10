@@ -59,6 +59,7 @@ static void socks5_fill_preamble(
        struct sockaddr * addr,
        size_t *preamble_len)
 {
+    log_error(LOG_DEBUG, "socks5_fill_preamble");
     preamble->reserved = 0;
     preamble->frag_no = 0; /* fragmentation is not supported */
     if (addr->sa_family == AF_INET) {
@@ -92,6 +93,7 @@ typedef struct socks5_client_t {
 
 static void socks5_client_init(redudp_client *client)
 {
+    log_error(LOG_DEBUG, "socks5_client_init");
     socks5_client *socks5client = (void*)(client + 1);
     memset(socks5client, 0, sizeof(socks5_client));
 }
@@ -100,7 +102,7 @@ static void socks5_client_fini(redudp_client *client)
 {
     socks5_client *socks5client = (void*)(client + 1);
     int fd;
-
+log_error(LOG_DEBUG, "socks5_client_fini");
     if (event_initialized(&socks5client->udprelay)) {
         fd = event_get_fd(&socks5client->udprelay);
         if (event_del(&socks5client->udprelay) == -1)
@@ -123,6 +125,7 @@ static int socks5_ready_to_fwd(struct redudp_client_t *client)
 
 static void socks5_forward_pkt(redudp_client *client, struct sockaddr *destaddr, void *buf, size_t pktlen)
 {
+    log_error(LOG_DEBUG, "socks5_forward_pkt");
     socks5_client *socks5client = (void*)(client + 1);
     socks5_udp_preamble req;
     struct msghdr msg;
@@ -158,9 +161,10 @@ static void socks5_forward_pkt(redudp_client *client, struct sockaddr *destaddr,
         return;
     }
 }
-
+//rmf att
 static void socks5_pkt_from_socks(int fd, short what, void *_arg)
 {
+    log_error(LOG_DEBUG, "socks5_pkt_from_socks");
     redudp_client *client = _arg;
     socks5_client *socks5client = (void*)(client + 1);
     union {
@@ -224,6 +228,7 @@ static void socks5_pkt_from_socks(int fd, short what, void *_arg)
 
 static void socks5_read_assoc_reply(struct bufferevent *buffev, void *_arg)
 {
+     log_error(LOG_DEBUG, "socks5_read_assoc_reply");
     redudp_client *client = _arg;
     socks5_client *socks5client = (void*)(client + 1);
     socks5_expected_assoc_reply reply;
@@ -277,7 +282,7 @@ static void socks5_read_assoc_reply(struct bufferevent *buffev, void *_arg)
         redudp_log_errno(client, LOG_NOTICE, "connect");
         goto fail;
     }
-
+//rmf att
     event_assign(&socks5client->udprelay, get_event_base(), fd, EV_READ | EV_PERSIST, socks5_pkt_from_socks, client);
     error = event_add(&socks5client->udprelay, NULL);
     if (error) {
@@ -299,6 +304,7 @@ fail:
 
 static void socks5_read_auth_reply(struct bufferevent *buffev, void *_arg)
 {
+     log_error(LOG_DEBUG, "socks5_read_auth_reply");
     redudp_client *client = _arg;
     socks5_client *socks5client = (void*)(client + 1);
     socks5_auth_reply reply;
@@ -334,6 +340,7 @@ fail:
 
 static void socks5_read_auth_methods(struct bufferevent *buffev, void *_arg)
 {
+    log_error(LOG_DEBUG, "socks5_read_auth_methods");
     redudp_client *client = _arg;
     socks5_client *socks5client = (void*)(client + 1);
     int do_password = socks5_is_valid_cred(client->instance->config.login, client->instance->config.password);
@@ -381,6 +388,7 @@ fail:
 
 static void socks5_relay_connected(struct bufferevent *buffev, void *_arg)
 {
+    log_error(LOG_DEBUG, "socks5_relay_connected");
     redudp_client *client = _arg;
     socks5_client *socks5client = (void*)(client + 1);
     int do_password = socks5_is_valid_cred(client->instance->config.login, client->instance->config.password);
@@ -410,6 +418,7 @@ fail:
 
 static void socks5_relay_error(struct bufferevent *buffev, short what, void *_arg)
 {
+    log_error(LOG_DEBUG, "socks5_relay_error");
     redudp_client *client = _arg;
     // TODO: FIXME: Implement me
     redudp_log_error(client, LOG_NOTICE, "socks5_relay_error");
@@ -419,6 +428,7 @@ static void socks5_relay_error(struct bufferevent *buffev, short what, void *_ar
 
 static void socks5_connect_relay(redudp_client *client)
 {
+    log_error(LOG_DEBUG, "socks5_connect_relay");
     socks5_client *socks5client = (void*)(client + 1);
     socks5client->relay = red_connect_relay(
            NULL,

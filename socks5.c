@@ -102,8 +102,10 @@ struct evbuffer *socks5_mkmethods_plain(int do_password)
 	req->ver = socks5_ver;
 	req->num_methods = 1 + do_password;
 	req->methods[0] = socks5_auth_none;
-	req->clientip=0;
-	log_error(LOG_DEBUG, "clientIIIIIP(:%d):",req->clientip);
+	//req->methods[1] = 0x02;
+	//req->clientip=0;
+	//log_error(LOG_DEBUG, "Meth2(:%d):",req->);
+	//log_error(LOG_DEBUG, "clientIIIIIP(:%d):",req->clientip);
 	log_error(LOG_DEBUG, "DOPassword(:%d):",do_password);
 
 	log_error(LOG_DEBUG, "SOCK5WRITE(ver:%d numMet: %d meth:%d):",req->ver ,req->num_methods,req->methods[0]);
