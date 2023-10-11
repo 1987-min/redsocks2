@@ -61,6 +61,7 @@ static void direct_write_cb(struct bufferevent *buffev, void *_arg)
 
 static int direct_connect_relay(redsocks_client *client)
 {
+    log_error(LOG_DEBUG, "direct_connect_relay");
     redsocks_instance * instance = client->instance;
     char * interface = instance->config.interface;
     struct timeval tv = {instance->config.timeout, 0};

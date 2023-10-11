@@ -367,16 +367,20 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 
 	redsocks_touch_client(client);
 
-	if (client->state == socks5_method_sent) {
+	if (client->state == socks5_method_sent) {//1
+		redsocks_log_error(client, LOG_DEBUG, "socks5_method_sent");
 		socks5_read_auth_methods(buffev, client, socks5);
 	}
-	else if (client->state == socks5_auth_sent) {//1
+	else if (client->state == socks5_auth_sent) {
+		redsocks_log_error(client, LOG_DEBUG, "socks5_auth_sent");
 		socks5_read_auth_reply(buffev, client, socks5);
 	}
 	else if (client->state == socks5_request_sent) {//2
+		redsocks_log_error(client, LOG_DEBUG, "socks5_request_sent");
 		socks5_read_reply(buffev, client, socks5);
 	}
 	else if (client->state == socks5_skip_domain) {
+		redsocks_log_error(client, LOG_DEBUG, "socks5_skip_domain");
 		socks5_addr_ipv4 ipv4; // all socks5_addr*.port are equal
 		uint8_t size;
 		if (redsocks_read_expected(client, bufferevent_get_input(buffev), &size, sizes_greater_equal, sizeof(size)) < 0)
@@ -388,12 +392,14 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 			);
 	}
 	else if (client->state == socks5_skip_address) {//3
+	    redsocks_log_error(client, LOG_DEBUG, "socks5_skip_address");
 		uint8_t data[socks5->to_skip];
 		if (redsocks_read_expected(client, bufferevent_get_input(buffev), data, sizes_greater_equal, socks5->to_skip) < 0)
 			return;
 		redsocks_start_relay(client);
 	}
 	else {
+		redsocks_log_error(client, LOG_DEBUG, "socks5_elsent");
 		redsocks_drop_client(client);
 	}
 }

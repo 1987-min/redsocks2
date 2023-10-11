@@ -369,6 +369,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
 
 static void redsocks_relay_relayreadcb(struct bufferevent *from, void *_client)
 {
+    log_error(LOG_DEBUG, "redsocks_relay_relayreadcb");
     redsocks_client *client = _client;
     redsocks_touch_client(client);
     redsocks_relay_readcb(client, client->relay, client->client);
@@ -376,6 +377,7 @@ static void redsocks_relay_relayreadcb(struct bufferevent *from, void *_client)
 
 static void redsocks_relay_relaywritecb(struct bufferevent *to, void *_client)
 {
+    log_error(LOG_DEBUG, "redsocks_relay_relaywritecb");
     redsocks_client *client = _client;
     redsocks_touch_client(client);
     redsocks_relay_writecb(client, client->client, client->relay);
@@ -383,6 +385,7 @@ static void redsocks_relay_relaywritecb(struct bufferevent *to, void *_client)
 
 static void redsocks_relay_clientreadcb(struct bufferevent *from, void *_client)
 {
+    log_error(LOG_DEBUG, "redsocks_relay_clientreadcb");
     redsocks_client *client = _client;
     redsocks_touch_client(client);
     redsocks_relay_readcb(client, client->client, client->relay);
@@ -390,6 +393,7 @@ static void redsocks_relay_clientreadcb(struct bufferevent *from, void *_client)
 
 static void redsocks_relay_clientwritecb(struct bufferevent *to, void *_client)
 {
+    log_error(LOG_DEBUG, "redsocks_relay_clientwritecb");
     redsocks_client *client = _client;
     redsocks_touch_client(client);
     redsocks_relay_writecb(client, client->relay, client->client);
@@ -397,6 +401,7 @@ static void redsocks_relay_clientwritecb(struct bufferevent *to, void *_client)
 
 int redsocks_start_relay(redsocks_client *client)
 {
+     log_error(LOG_DEBUG, "redsocks_start_relay");
     int error;
     bufferevent_event_cb event_cb;
 
@@ -533,7 +538,9 @@ static int redsocks_socket_geterrno(redsocks_client *client, struct bufferevent 
 
 void redsocks_event_error(struct bufferevent *buffev, short what, void *_arg)
 {
+    
     redsocks_client *client = _arg;
+     redsocks_log_errno(client, LOG_DEBUG, "redsocks_event_error");
     assert(buffev == client->relay || buffev == client->client);
 
     redsocks_touch_client(client);
@@ -670,6 +677,7 @@ int redsocks_write_helper(
 
 void redsocks_relay_connected(struct bufferevent *buffev, void *_arg)
 {
+    redsocks_log_errno(client, LOG_NOTICE, "redsocks_relay_connected");
     redsocks_client *client = _arg;
     assert(buffev == client->relay);
 
@@ -701,6 +709,7 @@ fail:
 
 int redsocks_connect_relay(redsocks_client *client)
 {
+    redsocks_log_errno(client, LOG_NOTICE, "redsocks_connect_relay");
     char * interface = client->instance->config.interface;
     struct timeval tv;
     tv.tv_sec = client->instance->config.timeout;
