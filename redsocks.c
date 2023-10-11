@@ -677,8 +677,9 @@ int redsocks_write_helper(
 
 void redsocks_relay_connected(struct bufferevent *buffev, void *_arg)
 {
-    redsocks_log_errno(client, LOG_NOTICE, "redsocks_relay_connected");
+    
     redsocks_client *client = _arg;
+    redsocks_log_errno(client, LOG_NOTICE, "redsocks_relay_connected");
     assert(buffev == client->relay);
 
     redsocks_touch_client(client);
