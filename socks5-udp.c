@@ -36,18 +36,21 @@ typedef struct socks5_expected_assoc_reply_t {
 
 static struct evbuffer* socks5_mkmethods_plain_wrapper(void *p)
 {
+    log_error(LOG_DEBUG, "socks5_mkmethods_plain_wrapper");
     int *do_password = p;
     return socks5_mkmethods_plain(*do_password);
 }
 
 static struct evbuffer* socks5_mkpassword_plain_wrapper(void *p)
 {
+    log_error(LOG_DEBUG, "socks5_mkpassword_plain_wrapper");
     redudp_instance *self = p;
     return socks5_mkpassword_plain(self->config.login, self->config.password);
 }
 
 static struct evbuffer* socks5_mkassociate(void *p)
 {
+    log_error(LOG_DEBUG, "socks5_mkassociate");
     struct sockaddr_storage sa;
     memset(&sa, 0, sizeof(sa));
     sa.ss_family = ((const struct sockaddr_storage *)p)->ss_family;

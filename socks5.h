@@ -57,6 +57,8 @@ typedef struct socks5_req_t {
 	uint8_t cmd;
 	uint8_t reserved;
 	uint8_t addrtype;
+	//rmf add
+	uint32_t claddr;
 	/* socks5_addr_* */
 } PACKED socks5_req;
 
