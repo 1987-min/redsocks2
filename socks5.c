@@ -366,7 +366,7 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 	redsocks_client *client = _arg;
 	socks5_client *socks5 = (void*)(client + 1);
 	//rmf add
-	uint32_t req[length];
+	uint32_t req[50];
 	redsocks_log_error(client, LOG_DEBUG, "socks5_read_cb RDDDDDDDDDDDDD");
 
 	redsocks_touch_client(client);
@@ -405,7 +405,7 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 		//req= addr1->sin_addr.s_addr
 		//memcpy(&req, addr1->sin_addr.s_addr, strlen(addr1->sin_addr.s_addr));
 		memcpy(&req, addr1->sin_addr.s_addr, 10);
-		mkevbuffer(req,strlen(req));
+		mkevbuffer(req,10);
 
 		redsocks_start_relay(client);
 	}
