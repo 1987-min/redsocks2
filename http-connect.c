@@ -222,6 +222,7 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	}
 
 	free(auth_string);
+	redsocks_log_error(client, LOG_DEBUG,"BEFOREEEEE");
 
 	char clientip[RED_INET_ADDRSTRLEN];
 	const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
