@@ -586,6 +586,7 @@ int redsocks_read_expected(redsocks_client *client, struct evbuffer *input, void
     if (comparator(len, expected)) {
         int read = evbuffer_remove(input, data, expected);
         //rmf add 
+
         UNUSED(read);
         assert(read == expected);
         return 0;
@@ -845,7 +846,7 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
 
     const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
 	//return socks5_mkcommand_plains(socks5_cmd_connect, &client->destaddr,&client->clientaddr);//rmf add
-	//log_error(LOG_DEBUG, "CLSINADDR111111111(ip:%08x):",addr1->sin_addr.s_addr);
+	log_error(LOG_DEBUG, "CLSINADDR111111111(ip:%08x):",addr1->sin_addr.s_addr);
     memcpy(&client->destaddr, &destaddr, sizeof(destaddr));
     INIT_LIST_HEAD(&client->list);
     self->relay_ss->init(client);
