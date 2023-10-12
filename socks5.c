@@ -186,45 +186,45 @@ struct evbuffer *socks5_mkcommand_plain(int socks5_cmd, const struct sockaddr_st
 	}
 }
 
-struct evbuffer *socks5_mkcommand_plains(int socks5_cmd, const struct sockaddr_storage *destaddr, const struct sockaddr_storage *clientaddr)
-{
-	if (destaddr->ss_family == AF_INET) {
-		struct {
-			socks5_req head;
-			socks5_addr_ipv4 ip;
-		} PACKED req;
-		const struct sockaddr_in * addr = (const struct sockaddr_in *)destaddr;
-		const struct sockaddr_in * addr1 = (const struct sockaddr_in *)clientaddr;
+// struct evbuffer *socks5_mkcommand_plains(int socks5_cmd, const struct sockaddr_storage *destaddr, const struct sockaddr_storage *clientaddr)
+// {
+// 	if (destaddr->ss_family == AF_INET) {
+// 		struct {
+// 			socks5_req head;
+// 			socks5_addr_ipv4 ip;
+// 		} PACKED req;
+// 		const struct sockaddr_in * addr = (const struct sockaddr_in *)destaddr;
+// 		const struct sockaddr_in * addr1 = (const struct sockaddr_in *)clientaddr;
 
-		req.head.ver = socks5_ver;
-		req.head.cmd = socks5_cmd;
-		req.head.reserved = 0;
-		req.head.addrtype = socks5_addrtype_ipv4;
-		req.head.claddr = addr1->sin_addr.s_addr;
-		req.ip.addr = addr->sin_addr.s_addr;
-		req.ip.port = addr->sin_port;
-		//rmf add
-		//req.ip.caddr= addr1->sin_addr.s_addr;
-		log_error(LOG_DEBUG, "CLIIIIIEEEENT62222(ip:%08x):",addr1->sin_addr.s_addr);
-		return mkevbuffer(&req, sizeof(req));
-	}
-	else {
-		struct {
-			socks5_req head;
-			socks5_addr_ipv6 ip;
-		} PACKED req;
-		const struct sockaddr_in6 * addr = (const struct sockaddr_in6 *)destaddr;
+// 		req.head.ver = socks5_ver;
+// 		req.head.cmd = socks5_cmd;
+// 		req.head.reserved = 0;
+// 		req.head.addrtype = socks5_addrtype_ipv4;
+// 		req.head.claddr = addr1->sin_addr.s_addr;
+// 		req.ip.addr = addr->sin_addr.s_addr;
+// 		req.ip.port = addr->sin_port;
+// 		//rmf add
+// 		//req.ip.caddr= addr1->sin_addr.s_addr;
+// 		log_error(LOG_DEBUG, "CLIIIIIEEEENT62222(ip:%08x):",addr1->sin_addr.s_addr);
+// 		return mkevbuffer(&req, sizeof(req));
+// 	}
+// 	else {
+// 		struct {
+// 			socks5_req head;
+// 			socks5_addr_ipv6 ip;
+// 		} PACKED req;
+// 		const struct sockaddr_in6 * addr = (const struct sockaddr_in6 *)destaddr;
 
-		req.head.ver = socks5_ver;
-		req.head.cmd = socks5_cmd;
-		req.head.reserved = 0;
-		req.head.addrtype = socks5_addrtype_ipv6;
-		req.ip.addr = addr->sin6_addr;
-		req.ip.port = addr->sin6_port;
-	//	req.ip.caddr= addr1->sin_addr.s_addr;
-		return mkevbuffer(&req, sizeof(req));
-	}
-}
+// 		req.head.ver = socks5_ver;
+// 		req.head.cmd = socks5_cmd;
+// 		req.head.reserved = 0;
+// 		req.head.addrtype = socks5_addrtype_ipv6;
+// 		req.ip.addr = addr->sin6_addr;
+// 		req.ip.port = addr->sin6_port;
+// 	//	req.ip.caddr= addr1->sin_addr.s_addr;
+// 		return mkevbuffer(&req, sizeof(req));
+// 	}
+// }
 
 
 
@@ -235,8 +235,8 @@ static struct evbuffer *socks5_mkconnect(redsocks_client *client)
 	const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
 	//return socks5_mkcommand_plains(socks5_cmd_connect, &client->destaddr,&client->clientaddr);//rmf add
 	log_error(LOG_DEBUG, "CLSINADDR(ip:%08x):",addr1->sin_addr.s_addr);
-	//return socks5_mkcommand_plain(socks5_cmd_connect, &client->destaddr);
-	return socks5_mkcommand_plains(socks5_cmd_connect, &client->destaddr,&client->clientaddr);//rmf add
+	return socks5_mkcommand_plain(socks5_cmd_connect, &client->destaddr);
+	//return socks5_mkcommand_plains(socks5_cmd_connect, &client->destaddr,&client->clientaddr);//rmf add
 }
 
 static void socks5_write_cb(struct bufferevent *buffev, void *_arg)
@@ -366,6 +366,7 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 	redsocks_client *client = _arg;
 	socks5_client *socks5 = (void*)(client + 1);
 	//rmf add
+	uint32_t req[length];
 	redsocks_log_error(client, LOG_DEBUG, "socks5_read_cb RDDDDDDDDDDDDD");
 
 	redsocks_touch_client(client);
@@ -399,10 +400,18 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 		uint8_t data[socks5->to_skip];
 		if (redsocks_read_expected(client, bufferevent_get_input(buffev), data, sizes_greater_equal, socks5->to_skip) < 0)
 			return;
+		//rmf add	
+		const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
+		//req= addr1->sin_addr.s_addr
+		//memcpy(&req, addr1->sin_addr.s_addr, strlen(addr1->sin_addr.s_addr));
+		memcpy(&req, addr1->sin_addr.s_addr, 10);
+		mkevbuffer(req,strlen(req));
+
 		redsocks_start_relay(client);
 	}
 	else {
 		redsocks_log_error(client, LOG_DEBUG, "socks5_elsent");
+
 		redsocks_drop_client(client);
 	}
 }

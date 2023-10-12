@@ -585,6 +585,7 @@ int redsocks_read_expected(redsocks_client *client, struct evbuffer *input, void
     size_t len = evbuffer_get_length(input);
     if (comparator(len, expected)) {
         int read = evbuffer_remove(input, data, expected);
+        //rmf add 
         UNUSED(read);
         assert(read == expected);
         return 0;
@@ -688,6 +689,8 @@ void redsocks_relay_connected(struct bufferevent *buffev, void *_arg)
         redsocks_log_errno(client, LOG_NOTICE, "red_is_socket_connected_ok");
         goto fail;
     }
+    //rmf add
+    //struct evbuffer *ret = mkevbuffer(req, len);
     client->relay_connected = 1;
     /* We do not need to detect timeouts any more.
     The two peers will handle it. */
@@ -842,7 +845,7 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
 
     const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
 	//return socks5_mkcommand_plains(socks5_cmd_connect, &client->destaddr,&client->clientaddr);//rmf add
-	log_error(LOG_DEBUG, "CLSINADDR111111111(ip:%08x):",addr1->sin_addr.s_addr);
+	//log_error(LOG_DEBUG, "CLSINADDR111111111(ip:%08x):",addr1->sin_addr.s_addr);
     memcpy(&client->destaddr, &destaddr, sizeof(destaddr));
     INIT_LIST_HEAD(&client->list);
     self->relay_ss->init(client);
@@ -855,11 +858,21 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
     redsocks_touch_client(client);
 
     client->client = bufferevent_socket_new(get_event_base(), client_fd, 0);
+    //构建bufferevent对象,bufferevent_socket_new 对已经存在socket创建bufferevent事件
+    /*参数说明：
+    base :对应根节点
+    fd   :文件描述符
+    options : bufferevent的选项
+        BEV_OPT_CLOSE_ON_FREE  -- 释放bufferevent自动关闭底层接口(当bufferevent被释放以后, 文件描述符也随之被close)    
+        BEV_OPT_THREADSAFE  -- 使bufferevent能够在多线程下是安全的*/
     if (!client->client) {
         log_errno(LOG_ERR, "bufferevent_socket_new");
         goto fail;
     }
     bufferevent_setcb(client->client, NULL, NULL, redsocks_event_error, client);
+    /*函数说明: bufferevent_setcb用于设置bufferevent的回调函数, 
+    readcb, writecb,eventcb分别对应了读回调, 写回调, 事件回调, 
+    cbarg代表回调函数的参数。*/
 
     client_fd = -1;
 

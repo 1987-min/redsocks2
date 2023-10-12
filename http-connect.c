@@ -223,6 +223,12 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 
 	free(auth_string);
 
+	char clientip[INET_ADDRSTRLEN];
+	const char *ip = inet_ntop(client->clientaddr.sin_family, &client->clientaddr.sin_addr, clientip, sizeof(clientip));
+	log_error(LOG_DEBUG,"hTTTTTp clientip=%s",ip);
+	len = evbuffer_add_printf(buff, "X-Forwarded-For: %s\r\n", ip);
+
+
 	if (len < 0) {
 		redsocks_log_errno(client, LOG_ERR, "evbufer_add_printf");
 		goto fail;
