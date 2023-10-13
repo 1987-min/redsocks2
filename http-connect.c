@@ -210,7 +210,7 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	}
 
 	if (auth_string == NULL) {
-		len = evbuffer_add_printf(buff, "CONNECT %s HTTP/1.0\r\n\r\n", uri);
+		//len = evbuffer_add_printf(buff, "CONNECT %s HTTP/1.0\r\n\r\n", uri);
 		redsocks_log_error(client, "CONNECT %s HTTP/1.0", uri);
 	} else {
 		len = evbuffer_add_printf(buff,
@@ -220,11 +220,11 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 			auth_scheme,
 			auth_string
 		);
-		redsocks_log_error(client, "CONNECT %s HTTP/1.0 %s %s %s",
+		/*redsocks_log_error(client, "CONNECT %s HTTP/1.0 %s %s %s",
 			uri,
 			auth_response_header,
 			auth_scheme,
-			auth_string);
+			auth_string);*/
 	}
 
 	free(auth_string);
