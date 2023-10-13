@@ -224,16 +224,18 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	free(auth_string);
 	redsocks_log_error(client, LOG_DEBUG,"BEFOREEEEE");
 
-	char clientip[RED_INET_ADDRSTRLEN];
+//	char clientip[RED_INET_ADDRSTRLEN];
 	redsocks_log_error(client, LOG_DEBUG,"BEF1");
-	const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
+//	const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
 	redsocks_log_error(client, LOG_DEBUG,"BEF2");
-	red_inet_ntop(addr1->sin_addr.s_addr, clientip, sizeof(clientip));
+	//red_inet_ntop(addr1->sin_addr.s_addr, clientip, sizeof(clientip));
 	redsocks_log_error(client, LOG_DEBUG,"BEF3");
 	//const char *ip = inet_ntop(AF_INET, addr1->sin_addr.s_addr, clientip, sizeof(clientip));
 	//const char *ip = inet_ntop(client->clientaddr.sin_family, &client->clientaddr.sin_addr, clientip, sizeof(clientip));
-	redsocks_log_error(client, LOG_DEBUG,"hTTTTTp clientip=%s",clientip);
-	len = evbuffer_add_printf(buff, "X-Forwarded-For: %s\r\n", clientip);
+//	redsocks_log_error(client, LOG_DEBUG,"hTTTTTp clientip=%s",clientip);
+//	len = evbuffer_add_printf(buff, "X-Forwarded-For: %s\r\n", clientip);
+    len = evbuffer_add_printf(buff, "X-Forwarded-For: 192.168.4.161\r\n");
+	redsocks_log_error(client, LOG_DEBUG,"BEF4");
 
 
 	if (len < 0) {
