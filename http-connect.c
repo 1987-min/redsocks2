@@ -240,11 +240,11 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	//const char *ip = inet_ntop(client->clientaddr.sin_family, &client->clientaddr.sin_addr, clientip, sizeof(clientip));
 //	redsocks_log_error(client, LOG_DEBUG,"hTTTTTp clientip=%s",clientip);
 //	len = evbuffer_add_printf(buff, "X-Forwarded-For: %s\r\n", clientip);
-    len = evbuffer_add_printf(buff, "X-Forwarded-For: 192.168.4.161\r\n");
-	redsocks_log_error(client, LOG_DEBUG,"BEF4 len=%d",len);
+    len = evbuffer_add_printf(buff, "X-Forwarded-For: 192.168.4.161\r\n\r\n");
+	redsocks_log_error(client, LOG_DEBUG,"BEF433 len=%d",len);
 
-	len = evbuffer_add(buff, "\r\n", 2);
-	redsocks_log_error(client, LOG_DEBUG,"BEF5 len=%d",len);
+	//len = evbuffer_add(buff, "\r\n", 2);
+	//redsocks_log_error(client, LOG_DEBUG,"BEF5 len=%d",len);
 	if (len < 0) {
 		redsocks_log_errno(client, LOG_ERR, "evbufer_add_printf");
 		goto fail;
