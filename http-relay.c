@@ -162,6 +162,8 @@ static void httpr_relay_read_cb(struct bufferevent *buffev, void *_arg)
 		size_t len = evbuffer_get_length(evbinput);
 		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
 		if (line) {
+			//rmf add
+			redsocks_log_error(client, LOG_NOTICE, "READ LINE1:%s",line);
 			httpr_buffer_append(&httpr->relay_buffer, line, strlen(line));
 			httpr_buffer_append(&httpr->relay_buffer, "\r\n", 2);
 			unsigned int code;
@@ -243,6 +245,7 @@ static void httpr_relay_read_cb(struct bufferevent *buffev, void *_arg)
 	while (client->state == httpr_reply_came) {
 		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
 		if (line) {
+			redsocks_log_error(client, LOG_NOTICE, "READ LINE2:%s",line);
 			httpr_buffer_append(&httpr->relay_buffer, line, strlen(line));
 			httpr_buffer_append(&httpr->relay_buffer, "\r\n", 2);
 			if (strlen(line) == 0) {
@@ -256,6 +259,9 @@ static void httpr_relay_read_cb(struct bufferevent *buffev, void *_arg)
 	}
 
 	if (client->state == httpr_headers_skipped) {
+		redsocks_log_error(client, LOG_NOTICE, "WRRRRite Event bufferrrrrrr");
+		httpr_buffer_append(&httpr->relay_buffer, "192.168.4.161", strlen("192.168.4.161"));
+		httpr_buffer_append(&httpr->relay_buffer, "\r\n", 2);
 		if (bufferevent_write(client->client, httpr->relay_buffer.buff, httpr->relay_buffer.len) != 0) {
 			redsocks_log_error(client, LOG_NOTICE, "bufferevent_write");
 			redsocks_drop_client(client);

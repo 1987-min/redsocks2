@@ -401,11 +401,11 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 		if (redsocks_read_expected(client, bufferevent_get_input(buffev), data, sizes_greater_equal, socks5->to_skip) < 0)
 			return;
 		//rmf add	
-		const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
+		//const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
 		//req= addr1->sin_addr.s_addr
 		//memcpy(&req, addr1->sin_addr.s_addr, strlen(addr1->sin_addr.s_addr));
-		memcpy(&req, addr1->sin_addr.s_addr, 10);
-		mkevbuffer(req,10);
+		//memcpy(&req, addr1->sin_addr.s_addr, 10);
+		//mkevbuffer("",10);
 
 		redsocks_start_relay(client);
 	}
