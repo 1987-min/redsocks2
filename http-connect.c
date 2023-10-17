@@ -45,11 +45,13 @@ typedef enum httpc_state_t {
 
 static void httpc_client_init(redsocks_client *client)
 {
+	log_error(LOG_NOTICE,"httpc_client_init");
 	client->state = httpc_new;
 }
 
 static void httpc_instance_fini(redsocks_instance *instance)
 {
+	log_error(LOG_NOTICE,"httpc_instance_fini");
 	http_auth *auth = (void*)(instance + 1);
 	free(auth->last_auth_query);
 	auth->last_auth_query = NULL;
@@ -274,6 +276,7 @@ void httpc_write_cb(struct bufferevent *buffev, void *_arg)
 
 	redsocks_touch_client(client);
 
+    redsocks_log_error(client, LOG_NOTICE, "httpc_write_cb");
 	if (client->state == httpc_new) {
 		redsocks_write_helper_ex(
 			buffev, client,

@@ -99,6 +99,7 @@ static void tracked_event_set(
         struct tracked_event *tev, evutil_socket_t fd, short events,
         void (*callback)(evutil_socket_t, short, void *), void *arg)
 {
+    log_error(LOG_NOTICE,"tracked_event_set");
     tev->ev = event_new(get_event_base(), fd, events, callback, arg);
     timerclear(&tev->inserted);
 }
@@ -107,6 +108,7 @@ static void tracked_event_set(
 
 static int tracked_event_add(struct tracked_event *tev, const struct timeval *tv)
 {
+    log_error(LOG_NOTICE,"tracked_event_add");
     int ret = event_add(tev->ev, tv);
     if (ret == 0)
         gettimeofday(&tev->inserted, NULL);
@@ -115,6 +117,7 @@ static int tracked_event_add(struct tracked_event *tev, const struct timeval *tv
 
 static int tracked_event_del(struct tracked_event *tev)
 {
+    log_error(LOG_NOTICE,"tracked_event_del");
     int ret = -1;
     if (tev->ev) {
         ret = event_del(tev->ev);
@@ -127,6 +130,7 @@ static int tracked_event_del(struct tracked_event *tev)
 
 static void tracked_event_free(struct tracked_event *tev)
 {
+    log_error(LOG_NOTICE,"tracked_event_free");
     if (tev->ev) {
         if (timerisset(&tev->inserted)) {
             event_del(tev->ev);
@@ -139,6 +143,7 @@ static void tracked_event_free(struct tracked_event *tev)
 
 static int redsocks_onenter(parser_section *section)
 {
+    log_error(LOG_NOTICE,"redsocks_onenter");
     // FIXME: find proper way to calulate instance_payload_len
     int instance_payload_len = 0;
     relay_subsys **ss;
@@ -186,6 +191,7 @@ static int redsocks_onenter(parser_section *section)
 
 static int redsocks_onexit(parser_section *section)
 {
+    log_error(LOG_NOTICE,"redsocks_onexit");
     /* FIXME: Rewrite in bullet-proof style. There are memory leaks if config
      *        file is not correct, so correct on-the-fly config reloading is
      *        currently impossible.
@@ -282,6 +288,7 @@ void redsocks_log_write_plain(
         const struct sockaddr_storage *destaddr,
         int priority, const char *orig_fmt, ...
 ) {
+     log_error(LOG_NOTICE,"redsocks_log_write_plain");
     int saved_errno = errno;
     va_list ap;
     char clientaddr_str[RED_INET_ADDRSTRLEN], destaddr_str[RED_INET_ADDRSTRLEN];
@@ -303,17 +310,20 @@ void redsocks_log_write_plain(
 
 void redsocks_touch_client(redsocks_client *client)
 {
+    log_error(LOG_NOTICE,"redsocks_touch_client");
     redsocks_time(&client->last_event);
 }
 
 static inline const char* bufname(redsocks_client *client, struct bufferevent *buf)
 {
+    log_error(LOG_NOTICE,"bufname");
     assert(buf == client->client || buf == client->relay);
     return buf == client->client ? "client" : "relay";
 }
 
 static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
 {
+    log_error(LOG_NOTICE,"redsocks_relay_readcb");
     redsocks_log_error(client, LOG_DEBUG, "RCB %s, in: %zu", from == client->client?"client":"relay",
                                             evbuffer_get_length(bufferevent_get_input(from)));
 
@@ -331,6 +341,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 
 int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
 {
+    log_error(LOG_NOTICE,"process_shutdown_on_write_");
     assert(from == client->client || from == client->relay);
     unsigned short from_evshut = from == client->client ? client->client_evshut : client->relay_evshut;
     unsigned short to_evshut = to == client->client ? client->client_evshut : client->relay_evshut;
@@ -353,6 +364,7 @@ int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from
 
 static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
 {
+    log_error(LOG_NOTICE,"redsocks_relay_writecb");
     assert(from == client->client || from == client->relay);
     unsigned short from_evshut = from == client->client ? client->client_evshut : client->relay_evshut;
 
@@ -474,6 +486,7 @@ void redsocks_drop_client(redsocks_client *client)
 
 void redsocks_shutdown(redsocks_client *client, struct bufferevent *buffev, int how, int pseudo)
 {
+    log_error(LOG_NOTICE,"redsocks_shutdown");
     short evhow = 0;
     char *strev, *strhow = NULL, *strevhow = NULL;
     unsigned short *pevshut;
@@ -528,6 +541,7 @@ void redsocks_shutdown(redsocks_client *client, struct bufferevent *buffev, int 
 // I assume that -1 is invalid errno value
 static int redsocks_socket_geterrno(redsocks_client *client, struct bufferevent *buffev)
 {
+    log_error(LOG_NOTICE,"redsocks_socket_geterrno");
     int pseudo_errno = red_socket_geterrno(buffev);
     if (pseudo_errno == -1) {
         redsocks_log_errno(client, LOG_ERR, "red_socket_geterrno");
@@ -538,6 +552,7 @@ static int redsocks_socket_geterrno(redsocks_client *client, struct bufferevent 
 
 void redsocks_event_error(struct bufferevent *buffev, short what, void *_arg)
 {
+    log_error(LOG_NOTICE,"redsocks_event_error");
     
     redsocks_client *client = _arg;
      redsocks_log_errno(client, LOG_DEBUG, "redsocks_event_error");
@@ -582,6 +597,7 @@ int sizes_greater_equal(size_t a, size_t b)
 
 int redsocks_read_expected(redsocks_client *client, struct evbuffer *input, void *data, size_comparator comparator, size_t expected)
 {
+    log_error(LOG_NOTICE,"redsocks_read_expected");
     size_t len = evbuffer_get_length(input);
     if (comparator(len, expected)) {
         int read = evbuffer_remove(input, data, expected);
@@ -600,6 +616,7 @@ int redsocks_read_expected(redsocks_client *client, struct evbuffer *input, void
 
 struct evbuffer *mkevbuffer(void *data, size_t len)
 {
+    log_error(LOG_NOTICE,"mkevbuffer");
     struct evbuffer *buff = NULL, *retval = NULL;
 
     buff = evbuffer_new();
@@ -737,7 +754,7 @@ int redsocks_connect_relay(redsocks_client *client)
 static void redsocks_accept_backoff(int fd, short what, void *_arg)
 {
     redsocks_instance *self = _arg;
-
+    log_error(LOG_NOTICE,"redsocks_accept_backoff");
     /* Isn't it already deleted? EV_PERSIST has nothing common with timeouts in
      * old libevent... On the other hand libevent does not return any error. */
     if (tracked_event_del(&self->accept_backoff) != 0)
@@ -749,6 +766,7 @@ static void redsocks_accept_backoff(int fd, short what, void *_arg)
 
 void redsocks_close_internal(int fd, const char* file, int line, const char *func)
 {
+     log_error(LOG_NOTICE,"redsocks_close_internal");
     if (close(fd) == 0) {
         redsocks_instance *instance = NULL;
         struct timeval now;
@@ -775,6 +793,7 @@ void redsocks_close_internal(int fd, const char* file, int line, const char *fun
 
 static void redsocks_accept_client(int fd, short what, void *_arg)
 {
+    log_error(LOG_NOTICE,"redsocks_accept_client");
     redsocks_instance *self = _arg;
     redsocks_client   *client = NULL;
     struct sockaddr_storage clientaddr;
@@ -840,13 +859,14 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
         log_errno(LOG_ERR, "calloc");
         goto fail;
     }
+    //在内存的动态存储区中分配num个长度为size的连续空间，函数返回一个指向分配起始地址的指针；如果分配不成功，返回NULL
 
     client->instance = self;
     memcpy(&client->clientaddr, &clientaddr, sizeof(clientaddr));
 
-    const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
+  //  const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
 	//return socks5_mkcommand_plains(socks5_cmd_connect, &client->destaddr,&client->clientaddr);//rmf add
-	log_error(LOG_DEBUG, "CLSINADDR111111111(ip:%08x):",addr1->sin_addr.s_addr);
+	log_error(LOG_DEBUG, "CLSINADDR111111111(ip:%s):",&client->clientaddr);
     memcpy(&client->destaddr, &destaddr, sizeof(destaddr));
     INIT_LIST_HEAD(&client->list);
     self->relay_ss->init(client);
@@ -926,6 +946,7 @@ static const char *redsocks_event_str(unsigned short what)
 
 void redsocks_dump_client(redsocks_client * client, int loglevel)
 {
+    log_error(LOG_NOTICE,"redsocks_dump_client");
     time_t now = redsocks_time(NULL);
 
     const char *s_client_evshut = redsocks_evshut_str(client->client_evshut);
@@ -948,6 +969,7 @@ void redsocks_dump_client(redsocks_client * client, int loglevel)
 
 static void redsocks_dump_instance(redsocks_instance *instance)
 {
+    log_error(LOG_NOTICE,"redsocks_dump_instance");
     redsocks_client *client = NULL;
     char addr_str[RED_INET_ADDRSTRLEN];
 
@@ -962,6 +984,7 @@ static void redsocks_dump_instance(redsocks_instance *instance)
 
 static void redsocks_debug_dump()
 {
+    log_error(LOG_NOTICE,"redsocks_debug_dump");
     redsocks_instance *instance = NULL;
 
     list_for_each_entry(instance, &instances, list)
@@ -975,6 +998,7 @@ static void redsocks_debug_dump()
  */
 static void redsocks_audit_instance(redsocks_instance *instance)
 {
+    log_error(LOG_NOTICE,"redsocks_audit_instance");
     redsocks_client *tmp, *client = NULL;
     time_t now = redsocks_time(NULL);
     int drop_it = 0;
@@ -1009,6 +1033,7 @@ static void redsocks_audit_instance(redsocks_instance *instance)
 
 static void redsocks_audit(int sig, short what, void *_arg)
 {
+    log_error(LOG_NOTICE,"redsocks_audit");
     redsocks_instance * tmp, *instance = NULL;
 
     list_for_each_entry_safe(instance, tmp, &instances, list)
@@ -1019,6 +1044,7 @@ static void redsocks_fini_instance(redsocks_instance *instance);
 
 static int redsocks_init_instance(redsocks_instance *instance)
 {
+    log_error(LOG_NOTICE,"redsocks_init_instance");
     /* FIXME: redsocks_fini_instance is called in case of failure, this
      *        function will remove instance from instances list - result
      *        looks ugly.
@@ -1103,6 +1129,7 @@ fail:
  * instances list.
  */
 static void redsocks_fini_instance(redsocks_instance *instance) {
+    log_error(LOG_NOTICE,"redsocks_fini_instance");
     if (!list_empty(&instance->clients)) {
         redsocks_client *tmp, *client = NULL;
 
@@ -1140,6 +1167,7 @@ static int redsocks_fini();
 static struct event * audit_event = NULL;
 
 static int redsocks_init() {
+    log_error(LOG_NOTICE,"redsocks_init");
     redsocks_instance *tmp, *instance = NULL;
     struct timeval audit_time;
     struct event_base * base = get_event_base();
@@ -1169,6 +1197,7 @@ fail:
 
 static int redsocks_fini()
 {
+     log_error(LOG_NOTICE,"redsocks_fini");
     redsocks_instance *tmp, *instance = NULL;
 
     list_for_each_entry_safe(instance, tmp, &instances, list)
