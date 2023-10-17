@@ -262,8 +262,8 @@ static void httpr_relay_read_cb(struct bufferevent *buffev, void *_arg)
 
 	if (client->state == httpr_headers_skipped) {
 		redsocks_log_error(client, LOG_NOTICE, "WRRRRite Event bufferrrrrrr");
-		httpr_buffer_append(&httpr->relay_buffer, "192.168.4.161", strlen("192.168.4.161"));
-		httpr_buffer_append(&httpr->relay_buffer, "\r\n", 2);
+		//httpr_buffer_append(&httpr->relay_buffer, "192.168.4.161", strlen("192.168.4.161"));
+		//httpr_buffer_append(&httpr->relay_buffer, "\r\n", 2);
 		if (bufferevent_write(client->client, httpr->relay_buffer.buff, httpr->relay_buffer.len) != 0) {
 			redsocks_log_error(client, LOG_NOTICE, "bufferevent_write");
 			redsocks_drop_client(client);
@@ -277,6 +277,7 @@ static void httpr_relay_read_cb(struct bufferevent *buffev, void *_arg)
 static void httpr_relay_write_cb(struct bufferevent *buffev, void *_arg)
 {
 	redsocks_client *client = _arg;
+	redsocks_log_errno(client, LOG_DEBUG, "httpr_relay_write_cb");
 	httpr_client *httpr = (void*)(client + 1);
 	int len = 0;
 
@@ -497,6 +498,7 @@ static void httpr_client_read_cb(struct bufferevent *buffev, void *_arg)
 {
 	redsocks_client *client = _arg;
 	httpr_client *httpr = (void*)(client + 1);
+	edsocks_log_errno(client, LOG_DEBUG, "httpr_client_read_cb");
 
 	redsocks_touch_client(client);
 
@@ -580,6 +582,7 @@ static int httpr_connect_relay(redsocks_client *client)
 	int error;
 
 	replace_readcb(client->client, httpr_client_read_cb);
+	redsocks_log_errno(client, LOG_DEBUG, "httpr_connect_relay");
 	error = bufferevent_enable(client->client, EV_READ);
 	if (error) {
 		redsocks_log_errno(client, LOG_ERR, "bufferevent_enable");

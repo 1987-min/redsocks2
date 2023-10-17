@@ -63,6 +63,7 @@ extern char *get_auth_request_header(struct evbuffer *buf);
 void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 {
 	redsocks_client *client = _arg;
+	redsocks_log_error(client, LOG_NOTICE, "httpc_read_cb");
 	int dropped = 0;
 	struct evbuffer * evbinput = bufferevent_get_input(buffev);
 
@@ -74,6 +75,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 		size_t len = evbuffer_get_length(evbinput);
 		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
 		if (line) {
+			redsocks_log_error(client, LOG_NOTICE, "http read line1=%s",line);
 			unsigned int code;
 			if (sscanf(line, "HTTP/%*u.%*u %u", &code) == 1) { // 1 == one _assigned_ match
 				if (code == 407) { // auth failed
@@ -91,6 +93,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 						dropped = 1;
 					} else {
 						char *auth_request = get_auth_request_header(evbinput);
+						redsocks_log_error(client, LOG_NOTICE, "auth_request=%s",line);
 
 						if (!auth_request) {
 							redsocks_log_error(client, LOG_NOTICE, "403 found, but no proxy auth challenge");
@@ -155,6 +158,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 	while (client->state == httpc_reply_came) {
 		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
 		if (line) {
+			redsocks_log_error(client, LOG_NOTICE, "http readline2=%s",line);
 			if (strlen(line) == 0) {
 				client->state = httpc_headers_skipped;
 			}
