@@ -220,11 +220,11 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	redsocks_log_errno(client, LOG_DEBUG, "uri:%s",uri);
 
 	if (auth_string == NULL) {
-		len = evbuffer_add_printf(buff, "CONNECT %s HTTP/1.0\r\n\r\n", uri);
+		len = evbuffer_add_printf(buff, "CONNECT %s HTTP/1.0 192.168.4.166\r\n\r\n", uri);
 		//redsocks_log_error(client, "CONNECT %s HTTP/1.0", uri);
 	} else {
 		len = evbuffer_add_printf(buff,
-			"CONNECT %s HTTP/1.0\r\n%s %s %s\r\n\r\n",
+			"CONNECT %s HTTP/1.0\r\n%s %s %s 192.168.4.166\r\n\r\n",
 			uri,
 			auth_response_header,
 			auth_scheme,
@@ -279,7 +279,8 @@ void httpc_write_cb(struct bufferevent *buffev, void *_arg)
 	redsocks_client *client = _arg;
 
 	char *line = NULL;
-     while(line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT)){
+	for(;;){
+     	line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT);
         log_error(LOG_DEBUG,"httpc_write_cb buffevbufferLine:%s",line);
 
         free(line);

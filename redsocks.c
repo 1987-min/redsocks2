@@ -325,14 +325,15 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 {
     log_error(LOG_NOTICE,"redsocks_relay_readcb");
     char *line = NULL;
-          while(line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT)){
-        log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
+    for (;;) {
+         line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
 
         free(line);
-      }
-
-      while(line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT)){
-        log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
+    }
+    for (;;) {
+      line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb tobufferLine:%s",line);
 
         free(line);
       }
@@ -381,13 +382,14 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     unsigned short from_evshut = from == client->client ? client->client_evshut : client->relay_evshut;
     char *line = NULL;
     //if(from == client->client){
-      while(line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT)){
+    for(;;){
+        line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
         log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
 
         free(line);
       }
-
-      while(line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT)){
+    for(;;){
+      line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
         log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
 
         free(line);
