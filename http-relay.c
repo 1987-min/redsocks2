@@ -151,6 +151,8 @@ static void httpr_relay_read_cb(struct bufferevent *buffev, void *_arg)
 	int dropped = 0;
 	struct evbuffer * evbinput = bufferevent_get_input(buffev);
 
+	redsocks_log_error(client, LOG_NOTICE, "httpr_relay_read_cb");
+
 	assert(client->state >= httpr_request_sent);
 
 	redsocks_touch_client(client);
@@ -332,6 +334,9 @@ static void httpr_relay_write_cb(struct bufferevent *buffev, void *_arg)
 				/* prepare an random string for cnounce */
 				char cnounce[17];
 				snprintf(cnounce, sizeof(cnounce), "%08x%08x", red_randui32(), red_randui32());
+				redsocks_log_errno(client, LOG_DEBUG, "evey auth_string=%s,%s,%s,%s,%s,%d,%s",auth->last_auth_query + 7, //line
+						client->instance->config.login, client->instance->config.password, //user, pass
+						method, uri, auth->last_auth_count, cnounce); // method, path, nc, cnounce
 
 				auth_string = digest_authentication_encode(auth->last_auth_query + 7, //line
 						client->instance->config.login, client->instance->config.password, //user, pass
@@ -342,7 +347,7 @@ static void httpr_relay_write_cb(struct bufferevent *buffev, void *_arg)
 				auth_scheme = "Digest";
 			}
 		}
-
+		redsocks_log_errno(client, LOG_DEBUG, "auth_string=%s",auth_string);
 		if (auth_string != NULL) {
 			len = 0;
 			len |= bufferevent_write(client->relay, auth_response_header, strlen(auth_response_header));
@@ -457,6 +462,7 @@ static void httpr_client_read_content(struct bufferevent *buffev, redsocks_clien
 
 	static int post_buffer_len = 64 * 1024;
 	char *post_buffer = calloc(post_buffer_len, 1);
+	redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
 	if (!post_buffer) {
 		redsocks_log_error(client, LOG_ERR, "run out of memory");
 		redsocks_drop_client(client);
@@ -505,8 +511,9 @@ static void httpr_client_read_cb(struct bufferevent *buffev, void *_arg)
 	while (!connect_relay && (line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT))) {
 		int skip_line = 0;
 		int do_drop = 0;
-
+		redsocks_log_errno(client, LOG_DEBUG, "httpr_client_read_cb readLine1111: %s",line);
 		if (strlen(line) > 0) {
+			redsocks_log_errno(client, LOG_DEBUG, "httpr_client_read_cb readLine: %s",line);
 			if (!httpr->firstline) {
 				httpr->firstline = line;
 				line = 0;
@@ -516,8 +523,8 @@ static void httpr_client_read_cb(struct bufferevent *buffev, void *_arg)
 				char *ptr = line + 5;
 				while (*ptr && isspace(*ptr))
 					ptr ++;
-				httpr->host = calloc(strlen(ptr) + 1, 1);
-				strcpy(httpr->host, ptr);
+				httpr->host = calloc(strlen(ptr) + 1, 1);//fuzhi
+				strcpy(httpr->host, ptr);//fuzhi
 			} else if (strncasecmp(line, "Proxy-Connection", 16) == 0)
 				skip_line = 1;
 			else if (strncasecmp(line, "Connection", 10) == 0)
@@ -525,13 +532,15 @@ static void httpr_client_read_cb(struct bufferevent *buffev, void *_arg)
 
 		}
 		else { // last line of request
+		redsocks_log_errno(client, LOG_DEBUG, "strlen(line) less than 0");
 			if (!httpr->firstline || httpr_toss_http_firstline(client) < 0)
 				do_drop = 1;
 
 			if (!httpr->has_host) {
+				redsocks_log_errno(client, LOG_DEBUG, "httpr has no host");
 				char host[266]; // "Host: 123.456.789.012:34567"
 				int written_wo_null = snprintf(host, sizeof(host), "Host: %s",
-				                               fmt_http_host(&client->destaddr));
+				                               fmt_http_host(&client->destaddr));//fuzhi
 				UNUSED(written_wo_null);
 				assert(0 < written_wo_null && written_wo_null < sizeof(host));
 				if (httpr_append_header(client, host) < 0)
