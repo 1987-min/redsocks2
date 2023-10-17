@@ -324,6 +324,18 @@ static inline const char* bufname(redsocks_client *client, struct bufferevent *b
 static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
 {
     log_error(LOG_NOTICE,"redsocks_relay_readcb");
+    char *line = NULL;
+          while(line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT)){
+        log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
+
+        free(line);
+      }
+
+      while(line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT)){
+        log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
+
+        free(line);
+      }
     redsocks_log_error(client, LOG_DEBUG, "RCB %s, in: %zu", from == client->client?"client":"relay",
                                             evbuffer_get_length(bufferevent_get_input(from)));
 
@@ -367,6 +379,22 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     log_error(LOG_NOTICE,"redsocks_relay_writecb");
     assert(from == client->client || from == client->relay);
     unsigned short from_evshut = from == client->client ? client->client_evshut : client->relay_evshut;
+    char *line = NULL;
+    //if(from == client->client){
+      while(line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT)){
+        log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
+
+        free(line);
+      }
+
+      while(line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT)){
+        log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
+
+        free(line);
+      }
+
+   // }
+
 
     if (process_shutdown_on_write_(client, from, to))
         return;

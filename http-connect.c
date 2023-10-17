@@ -214,6 +214,10 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 			auth_scheme = "Digest";
 		}
 	}
+	redsocks_log_errno(client, LOG_DEBUG, "auth_string:%s",auth_string);
+	redsocks_log_errno(client, LOG_DEBUG, "auth_response_header:%s",auth_response_header);
+	redsocks_log_errno(client, LOG_DEBUG, "auth_scheme:%s",auth_scheme);
+	redsocks_log_errno(client, LOG_DEBUG, "uri:%s",uri);
 
 	if (auth_string == NULL) {
 		len = evbuffer_add_printf(buff, "CONNECT %s HTTP/1.0\r\n\r\n", uri);
@@ -250,7 +254,7 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	//redsocks_log_error(client, LOG_DEBUG,"BEF433 len=%d",len);
 
 	//len = evbuffer_add(buff, "\r\n", 2);
-	//redsocks_log_error(client, LOG_DEBUG,"BEF5 len=%d",len);
+	redsocks_log_error(client, LOG_DEBUG,"BEF5 len=%d",len);
 	if (len < 0) {
 		redsocks_log_errno(client, LOG_ERR, "evbufer_add_printf");
 		goto fail;
@@ -273,6 +277,13 @@ fail:
 void httpc_write_cb(struct bufferevent *buffev, void *_arg)
 {
 	redsocks_client *client = _arg;
+
+	char *line = NULL;
+     while(line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT)){
+        log_error(LOG_DEBUG,"httpc_write_cb buffevbufferLine:%s",line);
+
+        free(line);
+    }
 
 	redsocks_touch_client(client);
 

@@ -498,7 +498,7 @@ static void httpr_client_read_cb(struct bufferevent *buffev, void *_arg)
 {
 	redsocks_client *client = _arg;
 	httpr_client *httpr = (void*)(client + 1);
-	edsocks_log_errno(client, LOG_DEBUG, "httpr_client_read_cb");
+	redsocks_log_errno(client, LOG_DEBUG, "httpr_client_read_cb");
 
 	redsocks_touch_client(client);
 
