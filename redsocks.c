@@ -412,7 +412,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     if (len>0){
          log_error(LOG_DEBUG,"from len >0");
         free(line);
-        len =evbuffer_add(buff,"\r\n");
+        len =evbuffer_add(buff,"\r\n",2);
         from=NULL;
         from =buff;
     }
@@ -441,7 +441,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     if (len>0){
         log_error(LOG_DEBUG,"to len >0");
         free(line1);
-        len =evbuffer_add(buff1,"\r\n");
+        len =evbuffer_add(buff1,"\r\n",2);
         to=NULL;
         to =buff1;
     }
