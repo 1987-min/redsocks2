@@ -280,13 +280,14 @@ void httpc_write_cb(struct bufferevent *buffev, void *_arg)
 {
 	redsocks_client *client = _arg;
 
-	// char *line = NULL;
-	// for(;;){
-    //  	line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT);
-    //     log_error(LOG_DEBUG,"httpc_write_cb buffevbufferLine:%s",line);
+	char *line = NULL;
+	
+     	line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT);
+	if(line){
+        log_error(LOG_DEBUG,"httpc_write_cb buffevbufferLine:%s",line);
 
-    //     free(line);
-    // }
+        free(line);
+    }
 
 	redsocks_touch_client(client);
 
