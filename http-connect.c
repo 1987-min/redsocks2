@@ -220,11 +220,13 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	redsocks_log_errno(client, LOG_DEBUG, "uri:%s",uri);
 
 	if (auth_string == NULL) {
-		len = evbuffer_add_printf(buff, "CONNECT %s HTTP/1.0 192.168.4.166\r\n\r\n", uri);
+		log_error(LOG_DEBUG,"auth_string is null");
+		len = evbuffer_add_printf(buff, "CONNECT %s HTTP/1.0\r\n", uri);
 		//redsocks_log_error(client, "CONNECT %s HTTP/1.0", uri);
 	} else {
+		log_error(LOG_DEBUG,"auth_string is not null");
 		len = evbuffer_add_printf(buff,
-			"CONNECT %s HTTP/1.0\r\n%s %s %s 192.168.4.166\r\n\r\n",
+			"CONNECT %s HTTP/1.0\r\n%s %s %s\r\n",
 			uri,
 			auth_response_header,
 			auth_scheme,
@@ -249,8 +251,8 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	//const char *ip = inet_ntop(AF_INET, addr1->sin_addr.s_addr, clientip, sizeof(clientip));
 	//const char *ip = inet_ntop(client->clientaddr.sin_family, &client->clientaddr.sin_addr, clientip, sizeof(clientip));
 //	redsocks_log_error(client, LOG_DEBUG,"hTTTTTp clientip=%s",clientip);
-//	len = evbuffer_add_printf(buff, "X-Forwarded-For: %s\r\n", clientip);
-    //len = evbuffer_add_printf(buff, "X-Forwarded-For: 192.168.4.161\r\n\r\n");
+	//len = evbuffer_add_printf(buff, "X-Forwarded-For: %s\r\n\r\n", clientip);
+    len = evbuffer_add_printf(buff, "X-Forwarded-For: 192.168.4.161\r\n\r\n");
 	//redsocks_log_error(client, LOG_DEBUG,"BEF433 len=%d",len);
 
 	//len = evbuffer_add(buff, "\r\n", 2);
