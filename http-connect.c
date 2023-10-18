@@ -80,7 +80,9 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 			redsocks_log_error(client, LOG_NOTICE, "http read line1=%s",line);
 			unsigned int code;
 			if (sscanf(line, "HTTP/%*u.%*u %u", &code) == 1) { // 1 == one _assigned_ match
+			redsocks_log_error(client, LOG_NOTICE, "code=%s",code);
 				if (code == 407) { // auth failed
+				    redsocks_log_error(client, LOG_NOTICE, "code 407");
 					http_auth *auth = (void*)(client->instance + 1);
 
 					if (auth->last_auth_query != NULL && auth->last_auth_count == 1) {
@@ -139,9 +141,10 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 						}
 					}
 				} else if (200 <= code && code <= 299) {
+					redsocks_log_error(client, LOG_NOTICE, "200-299");
 					client->state = httpc_reply_came;
 				} else {
-					redsocks_log_error(client, LOG_NOTICE, "%s", line);
+					redsocks_log_error(client, LOG_NOTICE, "code else", line);
 					redsocks_drop_client(client);
 					dropped = 1;
 				}
@@ -149,6 +152,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 			free(line);
 		}
 		else if (len >= HTTP_HEAD_WM_HIGH) {
+			redsocks_log_error(client, LOG_NOTICE, "len >= HTTP_HEAD_WM_HIGH");
 			redsocks_drop_client(client);
 			dropped = 1;
 		}
@@ -172,6 +176,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 	}
 
 	if (client->state == httpc_headers_skipped) {
+		redsocks_log_error(client, LOG_NOTICE, "httpc_headers_skipped");
 		redsocks_start_relay(client);
 	}
 }
