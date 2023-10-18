@@ -80,7 +80,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 			redsocks_log_error(client, LOG_NOTICE, "http read line1=%s",line);
 			unsigned int code;
 			if (sscanf(line, "HTTP/%*u.%*u %u", &code) == 1) { // 1 == one _assigned_ match
-			redsocks_log_error(client, LOG_NOTICE, "code=%s",code);
+			redsocks_log_error(client, LOG_NOTICE, "code=%d",code);
 				if (code == 407) { // auth failed
 				    redsocks_log_error(client, LOG_NOTICE, "code 407");
 					http_auth *auth = (void*)(client->instance + 1);
@@ -144,7 +144,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 					redsocks_log_error(client, LOG_NOTICE, "200-299");
 					client->state = httpc_reply_came;
 				} else {
-					redsocks_log_error(client, LOG_NOTICE, "code else", line);
+					redsocks_log_error(client, LOG_NOTICE, "code else");
 					redsocks_drop_client(client);
 					dropped = 1;
 				}
