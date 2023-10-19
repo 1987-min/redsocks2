@@ -394,12 +394,14 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
                                             evbuffer_get_length(bufferevent_get_input(from)));
 
     if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {
+         redsocks_log_errno(client, LOG_DEBUG, "bufferevent_get_output(to)) < get_write_hwm(to)");
         if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         if (bufferevent_enable(from, EV_READ) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_enable");
     }
     else {
+        redsocks_log_errno(client, LOG_DEBUG, "r<<<< else");
         if (bufferevent_disable(from, EV_READ) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_disable");
     }
@@ -560,6 +562,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     if (process_shutdown_on_write_(client, from, to))
         return;
     if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {
+        redsocks_log_errno(client, LOG_DEBUG, "bufferevent_get_output(to)) < get_write_hwm(to)");
         if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         if (!(from_evshut & EV_READ) && bufferevent_enable(from, EV_READ) == -1)
