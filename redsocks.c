@@ -326,21 +326,45 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     log_error(LOG_NOTICE,"redsocks_relay_readcb");
     char *line = NULL;
     char *line1 = NULL;
+    for(;;){
+    
+        line = NULL;
+        line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"before print readfromline");
+      
+        if (line == NULL) break;
+        log_error(LOG_DEBUG,"readfrombreak1");
+        if (strlen(line)<=0) break;
+        log_error(LOG_DEBUG,"edsocks_relay_readcb frombufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb fromstrlen line=%d",strlen(line));
+    }
+    for(;;){
+    
+        line = NULL;
+        line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"before print readtoline");
+      
+        if (line == NULL) break;
+        log_error(LOG_DEBUG,"readtobreak1");
+        if (strlen(line)<=0) break;
+        log_error(LOG_DEBUG,"edsocks_relay_readcb tobufferLine:%s",line);
+        log_error(LOG_DEBUG,"edsocks_relay_readcb tostrlen line=%d",strlen(line));
+    }
    // for (;;) {
-         line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
-         if(line){
-        log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
+        //  line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        //  if(line){
+        // log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
 
-        free(line);
-         }
+        // free(line);
+        //  }
     //}
     //for (;;) {
-      line1 = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
-      if(line1){
-        log_error(LOG_DEBUG,"redsocks_relay_readcb tobufferLine:%s",line1);
+    //   line1 = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
+    //   if(line1){
+    //     log_error(LOG_DEBUG,"redsocks_relay_readcb tobufferLine:%s",line1);
 
-        free(line1);
-      }
+    //     free(line1);
+    //   }
     redsocks_log_error(client, LOG_DEBUG, "RCB %s, in: %zu", from == client->client?"client":"relay",
                                             evbuffer_get_length(bufferevent_get_input(from)));
 
@@ -407,9 +431,9 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
       
         if (line == NULL) break;
         log_error(LOG_DEBUG,"break1");
-        if (sizeof(line)<=0) break;
+        if (strlen(line)<=0) break;
         log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
-        log_error(LOG_DEBUG,"redsocks_relay_writecb fromstrlen line=%d",sizeof(line));
+        log_error(LOG_DEBUG,"redsocks_relay_writecb fromstrlen line=%d",strlen(line));
 
         //if(j==1) evbuffer_add_printf(buff, "Xwurl: 192.168.4.161\r\n", line);
         len = evbuffer_add_printf(buff, "%s\r\n", line);
@@ -427,6 +451,19 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
    // buff=NULL;
     len=0;
     j=0;
+
+    for(;;){
+    
+        line = NULL;
+        line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"before print toline");
+      
+        if (line == NULL) break;
+        log_error(LOG_DEBUG,"tobreak1");
+        if (strlen(line)<=0) break;
+        log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_writecb tostrlen line=%d",strlen(line));
+    }
         //    line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
         // if(line){
         //     log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
@@ -455,12 +492,12 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     
     // buff1=NULL;
     //for(;;){
-      line1 = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
-      if(line1){
-        log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line1);
+    //   line1 = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
+    //   if(line1){
+    //     log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line1);
 
-        free(line1);
-      }
+    //     free(line1);
+    //   }
       //}
 
    // }
