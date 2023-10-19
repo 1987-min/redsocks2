@@ -401,12 +401,19 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     // }
     for(;;){
     
+        line = NULL;
         line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"before print line");
+      
+        if (line == NULL) break;
+        log_error(LOG_DEBUG,"break1");
+        if (sizeof(line)<=0) break;
         log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
-        log_error(LOG_DEBUG,"redsocks_relay_writecb fromstrlen line=%d",strlen(line));
-        if(strlen(line)<=0) break;
+        log_error(LOG_DEBUG,"redsocks_relay_writecb fromstrlen line=%d",sizeof(line));
+
         //if(j==1) evbuffer_add_printf(buff, "Xwurl: 192.168.4.161\r\n", line);
         len = evbuffer_add_printf(buff, "%s\r\n", line);
+         log_error(LOG_DEBUG,"redsocks_relay_writecb len=%d",len);
         j++;
     }
     if (len>0){
