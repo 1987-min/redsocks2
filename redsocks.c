@@ -561,6 +561,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         log_error(LOG_DEBUG,"redsocks_relay_writecb outtobufferLine:%s",line);
         log_error(LOG_DEBUG,"redsocks_relay_writecb outtostrlen line=%d",strlen(line));
     }
+    if (line !=NULL) free(line);
         //    line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
         // if(line){
         //     log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
@@ -613,7 +614,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         return;
     if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {
         redsocks_log_errno(client, LOG_DEBUG, "bufferevent_get_output(to)) < get_write_hwm(to)");
-        if (bufferevent_write_buffer(to, bufferevent_get_input(buff)) == -1)
+        if (bufferevent_write_buffer(to, buff) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         if (!(from_evshut & EV_READ) && bufferevent_enable(from, EV_READ) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_enable");
