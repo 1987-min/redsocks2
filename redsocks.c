@@ -491,6 +491,12 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     //     }
 
     // }
+    char clientaddr_str[RED_INET_ADDRSTRLEN];
+
+    log_errno(LOG_DEBUG,"clientaddr_str=%s",red_inet_ntop(&client->clientaddr,clientaddr_str,sizeof(clientaddr_str)));
+    //red_inet_ntop(&client->clientaddr,clientaddr_str,sizeof(clientaddr_str));
+
+
     for(;;){
     
         line = NULL;
