@@ -151,11 +151,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 			}
 			free(line);
 		}
-		else if (len >= HTTP_HEAD_WM_HIGH) {
-
-			char *line1 = evbuffer_readln(bufferevent_get_input(client->client), NULL, EVBUFFER_EOL_CRLF_STRICT);
-			redsocks_log_error(client, LOG_NOTICE, "prepre=%s",line1);
-
+		else if (len >= HTTP_HEAD_WM_HIGH) 
 			redsocks_log_error(client, LOG_NOTICE, "len >= HTTP_HEAD_WM_HIGH");
 			redsocks_drop_client(client);
 			dropped = 1;
@@ -180,6 +176,8 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 	}
 
 	if (client->state == httpc_headers_skipped) {
+					char *line1 = evbuffer_readln(bufferevent_get_input(client->client), NULL, EVBUFFER_EOL_CRLF_STRICT);
+			redsocks_log_error(client, LOG_NOTICE, "prepre=%s",line1);
 		redsocks_log_error(client, LOG_NOTICE, "httpc_headers_skipped");
 		redsocks_start_relay(client);
 	}
