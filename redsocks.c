@@ -619,6 +619,10 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     // }
         strev1 = from == client->client ? "client" : "relay";
          redsocks_log_errno(client, LOG_DEBUG, "strev111=%s",strev1);
+         if(strcmp(strev1,"client") == 0){
+            redsocks_log_errno(client, LOG_DEBUG, "sleep(100)");
+            sleep(100);
+         }
         if (process_shutdown_on_write_(client, from, to))
         return;
     if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {
