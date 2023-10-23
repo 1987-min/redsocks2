@@ -630,7 +630,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         }else
         {
             redsocks_log_errno(client, LOG_DEBUG, "choose from");
-            if (bufferevent_write_buffer(to, from) == -1)
+            if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         }
 
