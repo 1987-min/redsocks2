@@ -484,6 +484,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     int len=0;
     int j=0;
     const char *addpart="X-Forwarded-For: 192.168.4.161";
+    char *strev1;
     // if(from == client->client){
     //     log_error(LOG_DEBUG,"redsocks_relay_writecb client->client");
     //     {
@@ -616,15 +617,19 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     //     if (!(from_evshut & EV_READ) && bufferevent_enable(from, EV_READ) == -1)
     //         redsocks_log_errno(client, LOG_ERR, "bufferevent_enable");
     // }
+        strev1 = from == client->client ? "client" : "relay";
+         redsocks_log_errno(client, LOG_DEBUG, "strev111=%s",strev1);
         if (process_shutdown_on_write_(client, from, to))
         return;
     if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {
         redsocks_log_errno(client, LOG_DEBUG, "bufferevent_get_output(to)) < get_write_hwm(to)");
-        if(from == client->client){
+        if(strcmp(strev1,"client") == 0){
+            redsocks_log_errno(client, LOG_DEBUG, "choose buff");
             if (bufferevent_write_buffer(to, buff) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         }else
         {
+            redsocks_log_errno(client, LOG_DEBUG, "choose from");
             if (bufferevent_write_buffer(to, from) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         }
