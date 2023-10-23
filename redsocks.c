@@ -326,8 +326,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     log_error(LOG_NOTICE,"redsocks_relay_readcb");
     char *line = NULL;
     char *line1 = NULL;
-    struct evbuffer *buff = NULL;
-     buff = evbuffer_new();
+   // struct evbuffer *buff = NULL;
+   //  buff = evbuffer_new();
    // buff1 = evbuffer_new();
     int len=0;
     int j=0;
@@ -619,10 +619,10 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     // }
         strev1 = from == client->client ? "client" : "relay";
          redsocks_log_errno(client, LOG_DEBUG, "strev111=%s",strev1);
-         if(strcmp(strev1,"client") == 0){
-            redsocks_log_errno(client, LOG_DEBUG, "sleep(100)");
-            sleep(100);
-         }
+        //  if(strcmp(strev1,"client") == 0){
+        //     redsocks_log_errno(client, LOG_DEBUG, "sleep(100)");
+        //     sleep(100);
+        //  }
         if (process_shutdown_on_write_(client, from, to))
         return;
     if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {
