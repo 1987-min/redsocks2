@@ -341,7 +341,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         if (line == NULL) break;
         log_error(LOG_DEBUG,"readfrombreak1");
         if (strlen(line)<=0) break;
-        log_error(LOG_DEBUG,"edsocks_relay_readcb frombufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
         log_error(LOG_DEBUG,"redsocks_relay_readcb fromstrlen line=%d",strlen(line));
         // len = evbuffer_add_printf(buff, "%s\r\n", line);
         //  log_error(LOG_DEBUG,"redsocks_relay_readcb len=%d",len);
@@ -372,8 +372,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         if (line == NULL) break;
         log_error(LOG_DEBUG,"outtobreak1");
         if (strlen(line)<=0) break;
-        log_error(LOG_DEBUG,"edsocks_relay_readcb outfrombufferLine:%s",line);
-        log_error(LOG_DEBUG,"edsocks_relay_readcb outfromstrlen line=%d",strlen(line));
+        log_error(LOG_DEBUG,"redsocks_relay_readcb outfrombufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb outfromstrlen line=%d",strlen(line));
         //free(line);
     }
     for(;;){
@@ -385,8 +385,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         if (line == NULL) break;
         log_error(LOG_DEBUG,"readtobreak1");
         if (strlen(line)<=0) break;
-        log_error(LOG_DEBUG,"edsocks_relay_readcb tobufferLine:%s",line);
-        log_error(LOG_DEBUG,"edsocks_relay_readcb tostrlen line=%d",strlen(line));
+        log_error(LOG_DEBUG,"redsocks_relay_readcb tobufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb tostrlen line=%d",strlen(line));
         //free(line);
     }
     for(;;){
@@ -398,8 +398,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         if (line == NULL) break;
         log_error(LOG_DEBUG,"outtobreak1");
         if (strlen(line)<=0) break;
-        log_error(LOG_DEBUG,"edsocks_relay_readcb outtobufferLine:%s",line);
-        log_error(LOG_DEBUG,"edsocks_relay_readcb outtostrlen line=%d",strlen(line));
+        log_error(LOG_DEBUG,"redsocks_relay_readcb outtobufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb outtostrlen line=%d",strlen(line));
        // free(line);
     }
     if (line !=NULL) free(line);
@@ -514,13 +514,13 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         len = evbuffer_add_printf(buff, "%s\r\n", line);
          log_error(LOG_DEBUG,"redsocks_relay_writecb len=%d",len);
          j++;
-        if(j==1){
-             len = evbuffer_add_printf(buff, "%s\r\n",addpart);
-             log_error(LOG_DEBUG,"redsocks_relay_writecb addfrombufferLine:%s",addpart);
-        }
+        // if(j==1){
+        //      len = evbuffer_add_printf(buff, "%s\r\n",addpart);
+        //      log_error(LOG_DEBUG,"redsocks_relay_writecb addfrombufferLine:%s",addpart);
+        // }
     }
     if (len>0){
-         log_error(LOG_DEBUG,"from len >0");
+         log_error(LOG_DEBUG,"from lenwww >0");
         free(line);
         len =evbuffer_add(buff,"\r\n",2);
         //from=NULL;
