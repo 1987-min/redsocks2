@@ -422,6 +422,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 
     //     free(line1);
     //   }
+    sleep(1);
     redsocks_log_error(client, LOG_DEBUG, "RCB %s, in: %zu", from == client->client?"client":"relay",
                                             evbuffer_get_length(bufferevent_get_input(from)));
 
@@ -591,10 +592,10 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
          redsocks_log_errno(client, LOG_DEBUG, "strev111=%s",strev1);
         end=clock();
         log_error(LOG_DEBUG,"read add writehaoshi=%f",(double)(end-start)/CLOCKS_PER_SEC);
-         if(strcmp(strev1,"client") == 0){
-            redsocks_log_errno(client, LOG_DEBUG, "sleep(100)");
-            sleep(1);
-         }
+        //  if(strcmp(strev1,"client") == 0){
+        //     redsocks_log_errno(client, LOG_DEBUG, "sleep(100)");
+        //     sleep(1);
+        //  }
         if (process_shutdown_on_write_(client, from, to))
         return;
     if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {
