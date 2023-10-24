@@ -511,16 +511,16 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
     log_error(LOG_DEBUG,"write fromevbuffer input_size:%zu",input_size);
 
-    size_t * n_read_out;
+    //size_t * n_read_out;
     void *data;
    for(;;){
     
         line = NULL;
-        line = evbuffer_readln(bufferevent_get_input(from), n_read_out, EVBUFFER_EOL_CRLF_STRICT);
-        log_error(LOG_DEBUG,"write fromevbuffer n_read_out:%zu",n_read_out);
-        //log_error(LOG_DEBUG,"before print line");
+        line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        // log_error(LOG_DEBUG,"write fromevbuffer n_read_out:%zu",n_read_out);
+        log_error(LOG_DEBUG,"before print line");
       
-        if (n_read_out == NULL) break;
+        if (line == NULL) break;
         log_error(LOG_DEBUG,"break1");
         //if (strlen(line)<0) break;
         log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
@@ -528,9 +528,9 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
 
         len = evbuffer_add_printf(buff, "%s\r\n", line);
          log_error(LOG_DEBUG,"redsocks_relay_writecb len=%d",len);
-         if(n_read_out==0){
-            log_error(LOG_DEBUG,"final n_read_out==0");
-         }
+        //  if(n_read_out==0){
+        //     log_error(LOG_DEBUG,"final n_read_out==0");
+        //  }
          j++;
         // if(j==1){
         //      len = evbuffer_add_printf(buff, "%s\r\n",addpart);
