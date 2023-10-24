@@ -151,7 +151,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 			}
 			free(line);
 		}
-		else if (len >= HTTP_HEAD_WM_HIGH) 
+		else if (len >= HTTP_HEAD_WM_HIGH) {
 			redsocks_log_error(client, LOG_NOTICE, "len >= HTTP_HEAD_WM_HIGH");
 			redsocks_drop_client(client);
 			dropped = 1;
@@ -176,9 +176,10 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 	}
 
 	if (client->state == httpc_headers_skipped) {
-					char *line1 = evbuffer_readln(bufferevent_get_input(client->client), NULL, EVBUFFER_EOL_CRLF_STRICT);
-			redsocks_log_error(client, LOG_NOTICE, "prepre=%s",line1);
-		redsocks_log_error(client, LOG_NOTICE, "httpc_headers_skipped");
+		
+		char *line1 = evbuffer_readln(bufferevent_get_input(client->client), NULL, EVBUFFER_EOL_CRLF_STRICT);
+		redsocks_log_error(client, LOG_NOTICE, "prepre=%s",line1);	
+		//redsocks_log_error(client, LOG_NOTICE, "httpc_headers_skipped");
 		redsocks_start_relay(client);
 	}
 }
@@ -228,12 +229,12 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 
 	if (auth_string == NULL) {
 		log_error(LOG_DEBUG,"auth_string is null");
-		len = evbuffer_add_printf(buff, "CONNECT %s HTTP/1.0\r\n\r\n", uri);
+		len = evbuffer_add_printf(buff, "CONNECT %s HTTP/1.0\r\n", uri);
 		//redsocks_log_error(client, "CONNECT %s HTTP/1.0", uri);
 	} else {
 		log_error(LOG_DEBUG,"auth_string is not null");
 		len = evbuffer_add_printf(buff,
-			"CONNECT %s HTTP/1.0\r\n%s %s %s\r\n\r\n",
+			"CONNECT %s HTTP/1.0\r\n%s %s %s\r\n",
 			uri,
 			auth_response_header,
 			auth_scheme,
@@ -259,8 +260,8 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	//const char *ip = inet_ntop(client->clientaddr.sin_family, &client->clientaddr.sin_addr, clientip, sizeof(clientip));
 //	redsocks_log_error(client, LOG_DEBUG,"hTTTTTp clientip=%s",clientip);
 	//len = evbuffer_add_printf(buff, "X-Forwarded-For: %s\r\n\r\n", clientip);
-    //len = evbuffer_add_printf(buff, "X-Forwarded-For: 192.168.4.161\r\n\r\n");
-	//redsocks_log_error(client, LOG_DEBUG,"BEF433 len=%d",len);
+    len = evbuffer_add_printf(buff, "X-Forwarded-For: 192.168.4.161\r\n\r\n");
+	redsocks_log_error(client, LOG_DEBUG,"BEF433 len=%d",len);
 
 	//len = evbuffer_add(buff, "\r\n", 2);
 	redsocks_log_error(client, LOG_DEBUG,"BEF5 len=%d",len);

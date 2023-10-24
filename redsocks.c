@@ -326,23 +326,25 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     log_error(LOG_NOTICE,"redsocks_relay_readcb");
     char *line = NULL;
     char *line1 = NULL;
-   // struct evbuffer *buff = NULL;
-   //  buff = evbuffer_new();
+//    struct evbuffer *buff = NULL;
+//     buff = evbuffer_new();
    // buff1 = evbuffer_new();
     int len=0;
     int j=0;
     const char *addpart="X-Forwarded-For: 192.168.4.161";
-//     for(;;){
+    clock_t start,end;
+    start=clock();
+    for(;;){
     
-//         line = NULL;
-//         line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
-//         log_error(LOG_DEBUG,"before print readfromline");
+        line = NULL;
+        line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"before print readfromline");
       
-//         if (line == NULL) break;
-//         log_error(LOG_DEBUG,"readfrombreak1");
-//         if (strlen(line)<=0) break;
-//         log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
-//         log_error(LOG_DEBUG,"redsocks_relay_readcb fromstrlen line=%d",strlen(line));
+        if (line == NULL) break;
+        log_error(LOG_DEBUG,"readfrombreak1");
+        if (strlen(line)<=0) break;
+        log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb fromstrlen line=%d",strlen(line));
 //         // len = evbuffer_add_printf(buff, "%s\r\n", line);
 //         //  log_error(LOG_DEBUG,"redsocks_relay_readcb len=%d",len);
 //         //  j++;
@@ -350,7 +352,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 //         //      len = evbuffer_add_printf(buff, "%s\r\n",addpart);
 //         //      log_error(LOG_DEBUG,"redsocks_relay_readcb addfrombufferLine:%s",addpart);
 //         // }
-//     }
+    }
 //     // if (len>0){
 //     //      log_error(LOG_DEBUG,"from len >0");
 //     //     free(line);
@@ -363,46 +365,48 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 //     len=0;
 //     j=0;
 
-//     for(;;){
+    for(;;){
     
-//         line = NULL;
-//         line = evbuffer_readln(bufferevent_get_output(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
-//         log_error(LOG_DEBUG,"outbefore print toline");
+        line = NULL;
+        line = evbuffer_readln(bufferevent_get_output(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"outbefore print toline");
       
-//         if (line == NULL) break;
-//         log_error(LOG_DEBUG,"outtobreak1");
-//         if (strlen(line)<=0) break;
-//         log_error(LOG_DEBUG,"redsocks_relay_readcb outfrombufferLine:%s",line);
-//         log_error(LOG_DEBUG,"redsocks_relay_readcb outfromstrlen line=%d",strlen(line));
-//         //free(line);
-//     }
-//     for(;;){
+        if (line == NULL) break;
+        log_error(LOG_DEBUG,"outtobreak1");
+        if (strlen(line)<=0) break;
+        log_error(LOG_DEBUG,"redsocks_relay_readcb outfrombufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb outfromstrlen line=%d",strlen(line));
+        //free(line);
+    }
+    for(;;){
     
-//         line = NULL;
-//         line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
-//         log_error(LOG_DEBUG,"before print readtoline");
+        line = NULL;
+        line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"before print readtoline");
       
-//         if (line == NULL) break;
-//         log_error(LOG_DEBUG,"readtobreak1");
-//         if (strlen(line)<=0) break;
-//         log_error(LOG_DEBUG,"redsocks_relay_readcb tobufferLine:%s",line);
-//         log_error(LOG_DEBUG,"redsocks_relay_readcb tostrlen line=%d",strlen(line));
-//         //free(line);
-//     }
-//     for(;;){
+        if (line == NULL) break;
+        log_error(LOG_DEBUG,"readtobreak1");
+        if (strlen(line)<=0) break;
+        log_error(LOG_DEBUG,"redsocks_relay_readcb tobufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb tostrlen line=%d",strlen(line));
+        //free(line);
+    }
+    for(;;){
     
-//         line = NULL;
-//         line = evbuffer_readln(bufferevent_get_output(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
-//         log_error(LOG_DEBUG,"outbefore print toline");
+        line = NULL;
+        line = evbuffer_readln(bufferevent_get_output(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
+        log_error(LOG_DEBUG,"outbefore print toline");
       
-//         if (line == NULL) break;
-//         log_error(LOG_DEBUG,"outtobreak1");
-//         if (strlen(line)<=0) break;
-//         log_error(LOG_DEBUG,"redsocks_relay_readcb outtobufferLine:%s",line);
-//         log_error(LOG_DEBUG,"redsocks_relay_readcb outtostrlen line=%d",strlen(line));
-//        // free(line);
-//     }
-//     if (line !=NULL) free(line);
+        if (line == NULL) break;
+        log_error(LOG_DEBUG,"outtobreak1");
+        if (strlen(line)<=0) break;
+        log_error(LOG_DEBUG,"redsocks_relay_readcb outtobufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_readcb outtostrlen line=%d",strlen(line));
+       // free(line);
+    }
+    if (line !=NULL) free(line);
+    end=clock();
+    log_error(LOG_DEBUG,"read add haoshi=%f",(double)(end-start)/CLOCKS_PER_SEC);
    // for (;;) {
         //  line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
         //  if(line){
