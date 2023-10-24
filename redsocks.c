@@ -468,6 +468,8 @@ int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from
 
     if ((from_evshut & EV_READ) && !(to_evshut & EV_WRITE)
         &&  evbuffer_get_length(bufferevent_get_input(from)) == 0) {
+            redsocks_log_error(client, LOG_DEBUG, "shuuuuut downn" );
+
         redsocks_shutdown(client, to, SHUT_WR, 0);
         return 1;
     }
@@ -481,9 +483,9 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     unsigned short from_evshut = from == client->client ? client->client_evshut : client->relay_evshut;
     char *line = NULL;
     char *line1 = NULL;
-    struct evbuffer *buff = NULL;
+    // struct evbuffer *buff = NULL;
     //struct evbuffer *buff1 = NULL;
-    buff = evbuffer_new();
+    // buff = evbuffer_new();
    // buff1 = evbuffer_new();
     int len=0;
     int j=0;
@@ -505,7 +507,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
 // redsocks_log_errno(client, LOG_DEBUG, "process_shutdown_on_write_before");
 //     if (process_shutdown_on_write_(client, from, to))
 //         return;
-    for(;;){
+   for(;;){
     
         line = NULL;
         line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
@@ -517,26 +519,24 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
         log_error(LOG_DEBUG,"redsocks_relay_writecb fromstrlen line=%d",strlen(line));
 
-//         //if(j==1) evbuffer_add_printf(buff, "Xwurl: 192.168.4.161\r\n", line);
-        len = evbuffer_add_printf(buff, "%s\r\n", line);
-         log_error(LOG_DEBUG,"redsocks_relay_writecb len=%d",len);
-         j++;
-        if(j==1){
-             len = evbuffer_add_printf(buff, "%s\r\n",addpart);
-             log_error(LOG_DEBUG,"redsocks_relay_writecb addfrombufferLine:%s",addpart);
-        }
+        // len = evbuffer_add_printf(buff, "%s\r\n", line);
+        //  log_error(LOG_DEBUG,"redsocks_relay_writecb len=%d",len);
+        //  j++;
+        // if(j==1){
+        //      len = evbuffer_add_printf(buff, "%s\r\n",addpart);
+        //      log_error(LOG_DEBUG,"redsocks_relay_writecb addfrombufferLine:%s",addpart);
+        // }
     }
-    if (len>0){
-         log_error(LOG_DEBUG,"from lenwww >0");
-        free(line);
-        len =evbuffer_add(buff,"\r\n",2);
-        //from=NULL;
-        //from =buff;
-    }
+    // if (len>0){
+    //      log_error(LOG_DEBUG,"from lenwww >0");
+    //     free(line);
+    //     len =evbuffer_add(buff,"\r\n",2);
+
+    // }
     
-//    // buff=NULL;
-//     len=0;
-//     j=0;
+
+    len=0;
+    j=0;
     for(;;){
     
         line = NULL;
@@ -576,43 +576,6 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         log_error(LOG_DEBUG,"redsocks_relay_writecb outtostrlen line=%d",strlen(line));
     }
     if (line !=NULL) free(line);
-        //    line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
-        // if(line){
-        //     log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
-
-        //      free(line);
-        // }
-
-      //}
-    // for(;;){
-    
-    //     line1 = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
-    //     log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line1);
-    //     log_error(LOG_DEBUG,"redsocks_relay_writecb tostrlen line=%d",strlen(line1));
-    //     if(strlen(line1)<=0) break;
-    //     //if(j==1) evbuffer_add_printf(buff, "Xwurl: 192.168.4.161\r\n", line);
-    //     len = evbuffer_add_printf(buff1, "%s\r\n", line1);
-    //     j++;
-    // }
-    // if (len>0){
-    //     log_error(LOG_DEBUG,"to len >0");
-    //     free(line1);
-    //     len =evbuffer_add(buff1,"\r\n",2);
-    //     to=NULL;
-    //     to =buff1;
-    // }
-    
-    // buff1=NULL;
-    //for(;;){
-    //   line1 = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF_STRICT);
-    //   if(line1){
-    //     log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line1);
-
-    //     free(line1);
-    //   }
-      //}
-
-   // }
 
 
     // if (process_shutdown_on_write_(client, from, to))
@@ -628,24 +591,24 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
          redsocks_log_errno(client, LOG_DEBUG, "strev111=%s",strev1);
         end=clock();
         log_error(LOG_DEBUG,"read add writehaoshi=%f",(double)(end-start)/CLOCKS_PER_SEC);
-        //  if(strcmp(strev1,"client") == 0){
-        //     redsocks_log_errno(client, LOG_DEBUG, "sleep(100)");
-        //     sleep(100);
-        //  }
+         if(strcmp(strev1,"client") == 0){
+            redsocks_log_errno(client, LOG_DEBUG, "sleep(100)");
+            sleep(1);
+         }
         if (process_shutdown_on_write_(client, from, to))
         return;
     if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {
         redsocks_log_errno(client, LOG_DEBUG, "bufferevent_get_output(to)) < get_write_hwm(to)");
-        if(strcmp(strev1,"client") == 0){
-            redsocks_log_errno(client, LOG_DEBUG, "choose buff");
-            if (bufferevent_write_buffer(to, buff) == -1)
-            redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
-        }else
-        {
+        // if(strcmp(strev1,"client") == 0){
+        //     redsocks_log_errno(client, LOG_DEBUG, "choose buff");
+        //     if (bufferevent_write_buffer(to, buff) == -1)
+        //     redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
+        // }else
+        // {
             redsocks_log_errno(client, LOG_DEBUG, "choose from");
             if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
-        }
+        // }
 
         if (!(from_evshut & EV_READ) && bufferevent_enable(from, EV_READ) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_enable");
