@@ -434,7 +434,7 @@ int rand_bytes(uint8_t *output, int len)
         }
 #else
         FILE *urand;
-        union {
+        
             uint64_t seed;
             uint8_t buffer[8];
         } rand_buffer;
