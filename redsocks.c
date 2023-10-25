@@ -326,22 +326,22 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     log_error(LOG_NOTICE,"redsocks_relay_readcb");
     char *line = NULL;
     char *line1 = NULL;
-        union {
-        short len;
-        char  raw[4096];
-    } buff1;
-        static int post_buffer_len = 64 * 1024;
-	char *post_buffer = calloc(post_buffer_len, 1);
-        redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
-	if (!post_buffer) {
-		redsocks_log_error(client, LOG_ERR, "read postbuffer run out of memory");
-		redsocks_drop_client(client);
-		return;
-	}
+    //     union {
+    //     short len;
+    //     char  raw[4096];
+    // } buff1;
+    //     static int post_buffer_len = 64 * 1024;
+	// char *post_buffer = calloc(post_buffer_len, 1);
+    //     redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
+	// if (!post_buffer) {
+	// 	redsocks_log_error(client, LOG_ERR, "read postbuffer run out of memory");
+	// 	redsocks_drop_client(client);
+	// 	return;
+	// }
 
-        evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
+    //     evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
 
-    redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
+    // redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
 //    struct evbuffer *buff = NULL;
 //     buff = evbuffer_new();
    // buff1 = evbuffer_new();
@@ -517,18 +517,18 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
      struct evbuffer *buff = NULL;
     //struct evbuffer *buff1 = NULL;
      buff = evbuffer_new();
-    union {
-        short len;
-        char  raw[4096];
-    } buff1;
-    static int post_buffer_len = 64 * 1024;
-	char *post_buffer = calloc(post_buffer_len, 1);
-    redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
-	if (!post_buffer) {
-		redsocks_log_error(client, LOG_ERR, "run out of memory");
-		redsocks_drop_client(client);
-		return;
-	}
+    // union {
+    //     short len;
+    //     char  raw[4096];
+    // } buff1;
+    // static int post_buffer_len = 64 * 1024;
+	// char *post_buffer = calloc(post_buffer_len, 1);
+    // redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
+	// if (!post_buffer) {
+	// 	redsocks_log_error(client, LOG_ERR, "run out of memory");
+	// 	redsocks_drop_client(client);
+	// 	return;
+	// }
    // buff1 = evbuffer_new();
     int len=0;
     int j=0;
@@ -536,9 +536,9 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     char *strev1;
 
 
-    evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
+    // evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
 
-    redsocks_log_error(client, LOG_DEBUG, "wirte getpostbuffer=%s",post_buffer);
+    // redsocks_log_error(client, LOG_DEBUG, "wirte getpostbuffer=%s",post_buffer);
 
     // if(from == client->client){
     //     log_error(LOG_DEBUG,"redsocks_relay_writecb client->client");
@@ -617,8 +617,8 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     //     }
     // }
 
-    size_t input_size2 = evbuffer_get_length(bufferevent_get_input(from));
-    log_error(LOG_DEBUG,"write fromevbuffer input_size2:%zu",input_size2);
+    //size_t input_size2 = evbuffer_get_length(bufferevent_get_input(from));
+    //log_error(LOG_DEBUG,"write fromevbuffer input_size2:%zu",input_size2);
     // if (buff){
 	// 	evbuffer_free(buff);
 	// }
