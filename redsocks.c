@@ -330,6 +330,18 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         short len;
         char  raw[4096];
     } buff1;
+        static int post_buffer_len = 64 * 1024;
+	char *post_buffer = calloc(post_buffer_len, 1);
+        redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
+	if (!post_buffer) {
+		redsocks_log_error(client, LOG_ERR, "read postbuffer run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
+
+        evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
+
+    redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
 //    struct evbuffer *buff = NULL;
 //     buff = evbuffer_new();
    // buff1 = evbuffer_new();
@@ -435,7 +447,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         log_error(LOG_DEBUG,"strev1,client) == 0");
         if(input_size>0){
             size_t read_size = bufferevent_read(from, &buff1, sizeof(buff1));
-            log_error(LOG_DEBUG,"bufferevent_read content:%s",&buff1.raw);
+            log_error(LOG_DEBUG,"bufferevent_read content:%s",&buff1->raw);
 
         }
     }
@@ -509,11 +521,25 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         short len;
         char  raw[4096];
     } buff1;
+    static int post_buffer_len = 64 * 1024;
+	char *post_buffer = calloc(post_buffer_len, 1);
+    redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
+	if (!post_buffer) {
+		redsocks_log_error(client, LOG_ERR, "run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
    // buff1 = evbuffer_new();
     int len=0;
     int j=0;
     const char *addpart="X-Forwarded-For: 192.168.4.161";
     char *strev1;
+
+
+    evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
+
+    redsocks_log_error(client, LOG_DEBUG, "wirte getpostbuffer=%s",post_buffer);
+
     // if(from == client->client){
     //     log_error(LOG_DEBUG,"redsocks_relay_writecb client->client");
     //     {
@@ -581,7 +607,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         log_error(LOG_DEBUG,"strev1,client) == 0");
         if(input_size>0 ){
             size_t read_size = bufferevent_read(from, &buff1, sizeof(buff1));
-            log_error(LOG_DEBUG,"bufferevent_read content:%s",&buff1.raw);
+            log_error(LOG_DEBUG,"bufferevent_read content:%s",buff1->raw);
             //  log_error(LOG_DEBUG,"input_size>0 && len>0");
             //  int sucremove=evbuffer_remove(bufferevent_get_input(from), data, input_size);
             //  log_error(LOG_DEBUG,"evbuffer_remove data:%p result=%d",data,sucremove);
