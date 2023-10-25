@@ -334,6 +334,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     const char *addpart="X-Forwarded-For: 192.168.4.161";
     clock_t start,end;
     start=clock();
+    size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
+    log_error(LOG_DEBUG,"read fromevbuffer input_size2:%zu",input_size);
     for(;;){
     
         line = NULL;
@@ -423,6 +425,18 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     //     free(line1);
     //   }
     //sleep(1);
+           char * strev1 = from == client->client ? "client" : "relay";
+         redsocks_log_errno(client, LOG_DEBUG, "strev111=%s",strev1);
+    if(strcmp(strev1,"client") == 0){
+        log_error(LOG_DEBUG,"strev1,client) == 0");
+        if(input_size>0){
+            size_t read_size = bufferevent_read(from, &buff1, sizeof(buff1));
+            log_error(LOG_DEBUG,"bufferevent_read content:%s",buff1.raw);
+
+        }
+    }
+        size_t input_size2 = evbuffer_get_length(bufferevent_get_input(from));
+    log_error(LOG_DEBUG,"read fromevbuffer input_size2:%zu",input_size2);
     redsocks_log_error(client, LOG_DEBUG, "RCB %s, in: %zu", from == client->client?"client":"relay",
                                             evbuffer_get_length(bufferevent_get_input(from)));
 
@@ -487,6 +501,10 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
      struct evbuffer *buff = NULL;
     //struct evbuffer *buff1 = NULL;
      buff = evbuffer_new();
+    union {
+        short len;
+        char  raw[4096];
+    } buff1;
    // buff1 = evbuffer_new();
     int len=0;
     int j=0;
@@ -526,12 +544,12 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
         log_error(LOG_DEBUG,"redsocks_relay_writecb fromstrlen line=%d",strlen(line));
 
-        len = evbuffer_add_printf(buff, "%s\r\n", line);
-         log_error(LOG_DEBUG,"redsocks_relay_writecb len=%d",len);
+        // len = evbuffer_add_printf(buff, "%s\r\n", line);
+        //  log_error(LOG_DEBUG,"redsocks_relay_writecb len=%d",len);
         //  if(n_read_out==0){
         //     log_error(LOG_DEBUG,"final n_read_out==0");
         //  }
-         j++;
+         //j++;
         // if(j==1){
         //      len = evbuffer_add_printf(buff, "%s\r\n",addpart);
         //      log_error(LOG_DEBUG,"redsocks_relay_writecb addfrombufferLine:%s",addpart);
@@ -557,18 +575,23 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
          redsocks_log_errno(client, LOG_DEBUG, "strev111=%s",strev1);
     if(strcmp(strev1,"client") == 0){
         log_error(LOG_DEBUG,"strev1,client) == 0");
-        if(input_size>0 && len>0){
-             log_error(LOG_DEBUG,"input_size>0 && len>0");
-             int sucremove=evbuffer_remove(bufferevent_get_input(from), data, input_size);
-             log_error(LOG_DEBUG,"evbuffer_remove data:%p result=%d",data,sucremove);
-             int secwrite=bufferevent_write_buffer(bufferevent_get_input(from),buff);
-             log_error(LOG_DEBUG,"bufferevent_write_buffer result=%d",secwrite);
+        if(input_size>0 ){
+            size_t read_size = bufferevent_read(from, &buff1, sizeof(buff1));
+            log_error(LOG_DEBUG,"bufferevent_read content:%s",buff1.raw);
+            //  log_error(LOG_DEBUG,"input_size>0 && len>0");
+            //  int sucremove=evbuffer_remove(bufferevent_get_input(from), data, input_size);
+            //  log_error(LOG_DEBUG,"evbuffer_remove data:%p result=%d",data,sucremove);
+            //  int secwrite=bufferevent_write_buffer(bufferevent_get_input(from),buff);
+            //  log_error(LOG_DEBUG,"bufferevent_write_buffer result=%d",secwrite);
 
         }
     }
-    if (buff){
-		evbuffer_free(buff);
-	}
+
+    size_t input_size2 = evbuffer_get_length(bufferevent_get_input(from));
+    log_error(LOG_DEBUG,"write fromevbuffer input_size2:%zu",input_size2);
+    // if (buff){
+	// 	evbuffer_free(buff);
+	// }
     
 
     len=0;
@@ -660,6 +683,7 @@ static void redsocks_relay_relayreadcb(struct bufferevent *from, void *_client)
     redsocks_client *client = _client;
     redsocks_touch_client(client);
     redsocks_relay_readcb(client, client->relay, client->client);
+    //relay读区，写到 client写区，clinet写区输出到client端
 }
 
 static void redsocks_relay_relaywritecb(struct bufferevent *to, void *_client)
@@ -668,6 +692,7 @@ static void redsocks_relay_relaywritecb(struct bufferevent *to, void *_client)
     redsocks_client *client = _client;
     redsocks_touch_client(client);
     redsocks_relay_writecb(client, client->client, client->relay);
+    
 }
 
 static void redsocks_relay_clientreadcb(struct bufferevent *from, void *_client)
@@ -676,6 +701,7 @@ static void redsocks_relay_clientreadcb(struct bufferevent *from, void *_client)
     redsocks_client *client = _client;
     redsocks_touch_client(client);
     redsocks_relay_readcb(client, client->client, client->relay);
+    //client读区，写到 relay写区，relay写区输出到relay端
 }
 
 static void redsocks_relay_clientwritecb(struct bufferevent *to, void *_client)
