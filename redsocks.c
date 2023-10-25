@@ -326,6 +326,10 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     log_error(LOG_NOTICE,"redsocks_relay_readcb");
     char *line = NULL;
     char *line1 = NULL;
+        union {
+        short len;
+        char  raw[4096];
+    } buff1;
 //    struct evbuffer *buff = NULL;
 //     buff = evbuffer_new();
    // buff1 = evbuffer_new();
@@ -431,7 +435,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         log_error(LOG_DEBUG,"strev1,client) == 0");
         if(input_size>0){
             size_t read_size = bufferevent_read(from, &buff1, sizeof(buff1));
-            log_error(LOG_DEBUG,"bufferevent_read content:%s",buff1.raw);
+            log_error(LOG_DEBUG,"bufferevent_read content:%s",&buff1.raw);
 
         }
     }
@@ -577,7 +581,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         log_error(LOG_DEBUG,"strev1,client) == 0");
         if(input_size>0 ){
             size_t read_size = bufferevent_read(from, &buff1, sizeof(buff1));
-            log_error(LOG_DEBUG,"bufferevent_read content:%s",buff1.raw);
+            log_error(LOG_DEBUG,"bufferevent_read content:%s",&buff1.raw);
             //  log_error(LOG_DEBUG,"input_size>0 && len>0");
             //  int sucremove=evbuffer_remove(bufferevent_get_input(from), data, input_size);
             //  log_error(LOG_DEBUG,"evbuffer_remove data:%p result=%d",data,sucremove);
