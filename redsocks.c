@@ -565,15 +565,16 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
         log_error(LOG_DEBUG,"redsocks_relay_writecb fromstrlen line=%d",strlen(line));
         if(strlen(line)>0){
+            log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
             memcpy(linebuf,line,strlen(line));
             memcpy(linebuf+strlen(line),"\r\n",2);
             memcpy(linebuf+strlen(line)+2,addpart,strlen(addpart));
             memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
             log_error(LOG_DEBUG,"linebuf=%s",linebuf);
-            log_error(LOG_DEBUG,"linebuflen=%s",linebuf+strlen(line)strlen(addpart)+4);
+            log_error(LOG_DEBUG,"linebuflen=%d",linebuf+strlen(line)+strlen(addpart)+4);
             if(strlen(post_buffer)>(strlen(line)+strlen(addpart)+4)){
                 log_error(LOG_DEBUG,"strlen(post_buffer)>(strlen(line)strlen(addpart)+4");
-                memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+strlen(addpart)+4,strlen(post_buffer)-strlen(line)-strlen(addpart)-4)
+                memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2)
                 redsocks_log_error(client, LOG_DEBUG, "get whole linebuf=%s",linebuf);
                 redsocks_log_error(client, LOG_DEBUG, "get whole linebuflen=%d",strlen(linebuf));
                 if(strlen(linebuf)>0){
