@@ -574,7 +574,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
             log_error(LOG_DEBUG,"linebuflen=%d",linebuf+strlen(line)+strlen(addpart)+4);
             if(strlen(post_buffer)>(strlen(line)+strlen(addpart)+4)){
                 log_error(LOG_DEBUG,"strlen(post_buffer)>(strlen(line)strlen(addpart)+4");
-                memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2)
+                memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
                 redsocks_log_error(client, LOG_DEBUG, "get whole linebuf=%s",linebuf);
                 redsocks_log_error(client, LOG_DEBUG, "get whole linebuflen=%d",strlen(linebuf));
                 if(strlen(linebuf)>0){
