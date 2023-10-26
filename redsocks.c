@@ -713,7 +713,8 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         return;
     if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {
         redsocks_log_errno(client, LOG_DEBUG, "bufferevent_get_output(to)) < get_write_hwm(to)");
-        if(strcmp(strev1,"client") == 0 && strlen(linebuf)>0){
+       // if(strcmp(strev1,"client") == 0 && strlen(linebuf)>0){
+        if(strlen(linebuf)>0){
             redsocks_log_error(client, LOG_DEBUG, "(strcmp(strev1,client) == 0 && strlen(linebuf)>0)");
             // redsocks_log_errno(client, LOG_DEBUG, "choose buff");
             //if (bufferevent_write_buffer(to, buff) == -1)
@@ -723,7 +724,8 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
              memset(linebuf ,0,sizeof(linebuf));
 
             // redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
-        }else
+        }
+        else
         {
             redsocks_log_errno(client, LOG_DEBUG, "choose from");
             if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1);
