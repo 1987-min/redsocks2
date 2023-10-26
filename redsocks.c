@@ -535,11 +535,17 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     const char *addpart="X-Forwarded-For: 192.168.4.161";
     char *strev1;
 
+    memset(post_buffer ,0,sizeof(post_buffer));
 
-     evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
+    size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
+    log_error(LOG_DEBUG,"write fromevbuffer input_size:%zu",input_size);
+
+     //evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
+     evbuffer_copyout(bufferevent_get_input(from), post_buffer, input_size);
 
     redsocks_log_error(client, LOG_DEBUG, "wirte getpostbuffer=%s",post_buffer);
-    redsocks_log_error(client, LOG_DEBUG, "wirte getpostbufferlen=%d",strlen(post_buffer));
+    //redsocks_log_error(client, LOG_DEBUG, "wirte getpostbufferlen=%d",input_size);
+   redsocks_log_error(client, LOG_DEBUG, "wirte getpostbufferlen=%d",strlen(post_buffer));
     clock_t start,end;
     start=clock();
    // char clientaddr_str[RED_INET_ADDRSTRLEN];
@@ -547,8 +553,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
    
 
    // log_errno(LOG_DEBUG,"clientaddr_str=%s",red_inet_ntop(&client->clientaddr,clientaddr_str,sizeof(clientaddr_str)));
-    size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
-    log_error(LOG_DEBUG,"write fromevbuffer input_size:%zu",input_size);
+
 
     //size_t * n_read_out;
     void *data;
@@ -575,9 +580,11 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
             memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
             log_error(LOG_DEBUG,"linebuf=%s",linebuf);
             log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+strlen(addpart)+4);
-            if(strlen(post_buffer)>(strlen(line))){
+            //if(strlen(post_buffer)>(strlen(line))){
+            if(input_size >(strlen(line))){
                 log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
-                memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
+                //memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
+                memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,input_size-strlen(line)-2);
                 redsocks_log_error(client, LOG_DEBUG, "get whole linebuf=%s",linebuf);
                 redsocks_log_error(client, LOG_DEBUG, "get whole linebuflen=%d",strlen(linebuf));
                 // if(strlen(linebuf)>0){
