@@ -709,7 +709,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
             // redsocks_log_errno(client, LOG_DEBUG, "choose buff");
             //if (bufferevent_write_buffer(to, buff) == -1)
             bufferevent_write(to,linebuf,strlen(linebuf));
-            size_t input_size3 = evbuffer_get_length(bufferevent_get_output(to)));
+            size_t input_size3 = evbuffer_get_length(bufferevent_get_output(to));
              log_error(LOG_DEBUG,"write fromevbuffer input_size3:%zu",input_size3);
 
             // redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
