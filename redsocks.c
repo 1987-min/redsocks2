@@ -716,11 +716,11 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         }else
         {
             redsocks_log_errno(client, LOG_DEBUG, "choose from");
-            if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1)
+            if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1);
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
          }
 
-        if (!(from_evshut & EV_READ) && bufferevent_enable(from, EV_READ) == -1)
+        if (!(from_evshut & EV_READ) && bufferevent_enable(from, EV_READ) == -1);
             redsocks_log_errno(client, LOG_ERR, "bufferevent_enable");
     }else{
         redsocks_log_errno(client, LOG_DEBUG, "meizou");
