@@ -552,6 +552,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
 
     //size_t * n_read_out;
     void *data;
+    memset(linebuf ,0,sizeof(linebuf));
    for(;;){
     
         line = NULL;
@@ -564,6 +565,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         //if (strlen(line)<0) break;
         log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
         log_error(LOG_DEBUG,"redsocks_relay_writecb fromstrlen line=%d",strlen(line));
+        
         if(strlen(line)>0)
         {
             log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
@@ -573,8 +575,8 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
             memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
             log_error(LOG_DEBUG,"linebuf=%s",linebuf);
             log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+strlen(addpart)+4);
-            if(strlen(post_buffer)>(strlen(line)+strlen(addpart)+4)){
-                log_error(LOG_DEBUG,"strlen(post_buffer)>(strlen(line)strlen(addpart)+4");
+            if(strlen(post_buffer)>(strlen(line))){
+                log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
                 memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
                 redsocks_log_error(client, LOG_DEBUG, "get whole linebuf=%s",linebuf);
                 redsocks_log_error(client, LOG_DEBUG, "get whole linebuflen=%d",strlen(linebuf));
@@ -711,6 +713,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
             bufferevent_write(to,linebuf,strlen(linebuf));
             size_t input_size3 = evbuffer_get_length(bufferevent_get_output(to));
              log_error(LOG_DEBUG,"write fromevbuffer input_size3:%zu",input_size3);
+             memset(linebuf ,0,sizeof(linebuf));
 
             // redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         }else
