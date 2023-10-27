@@ -75,7 +75,8 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 
 	if (client->state == httpc_request_sent) {
 		size_t len = evbuffer_get_length(evbinput);
-		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
+		// char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
+		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF);
 		if (line) {
 			redsocks_log_error(client, LOG_NOTICE, "http read line1=%s",line);
 			unsigned int code;
@@ -162,7 +163,8 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 		return;
 
 	while (client->state == httpc_reply_came) {
-		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
+		// char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
+		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF);
 		if (line) {
 			redsocks_log_error(client, LOG_NOTICE, "http readline2=%s",line);
 			if (strlen(line) == 0) {
@@ -177,9 +179,9 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 
 	if (client->state == httpc_headers_skipped) {
 		
-		char *line1 = evbuffer_readln(bufferevent_get_input(client->client), NULL, EVBUFFER_EOL_CRLF_STRICT);
-		redsocks_log_error(client, LOG_NOTICE, "prepre=%s",line1);	
-		//redsocks_log_error(client, LOG_NOTICE, "httpc_headers_skipped");
+		//char *line1 = evbuffer_readln(bufferevent_get_input(client->client), NULL, EVBUFFER_EOL_CRLF_STRICT);
+		//redsocks_log_error(client, LOG_NOTICE, "prepre=%s",line1);	
+		redsocks_log_error(client, LOG_NOTICE, "httpc_headers_skipped");
 		redsocks_start_relay(client);
 	}
 }
@@ -288,14 +290,14 @@ void httpc_write_cb(struct bufferevent *buffev, void *_arg)
 {
 	redsocks_client *client = _arg;
 
-	char *line = NULL;
+	// char *line = NULL;
 	
-     	line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT);
-	if(line){
-        log_error(LOG_DEBUG,"httpc_write_cb buffevbufferLine:%s",line);
+    //  	line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT);
+	// if(line){
+    //     log_error(LOG_DEBUG,"httpc_write_cb buffevbufferLine:%s",line);
 
-        free(line);
-    }
+    //     free(line);
+    // }
 
 	redsocks_touch_client(client);
 

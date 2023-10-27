@@ -162,7 +162,8 @@ static void httpr_relay_read_cb(struct bufferevent *buffev, void *_arg)
 
 	if (client->state == httpr_request_sent) {
 		size_t len = evbuffer_get_length(evbinput);
-		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
+		// char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
+		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF);
 		if (line) {
 			//rmf add
 			redsocks_log_error(client, LOG_NOTICE, "READ LINE1:%s",line);
@@ -245,7 +246,8 @@ static void httpr_relay_read_cb(struct bufferevent *buffev, void *_arg)
 		return;
 
 	while (client->state == httpr_reply_came) {
-		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
+		//char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF_STRICT);
+		char *line = evbuffer_readln(evbinput, NULL, EVBUFFER_EOL_CRLF);
 		if (line) {
 			redsocks_log_error(client, LOG_NOTICE, "READ LINE2:%s",line);
 			httpr_buffer_append(&httpr->relay_buffer, line, strlen(line));
@@ -510,7 +512,8 @@ static void httpr_client_read_cb(struct bufferevent *buffev, void *_arg)
 	char *line = NULL;
 	int connect_relay = 0;
 
-	while (!connect_relay && (line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT))) {
+	//while (!connect_relay && (line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF_STRICT))) {
+	while (!connect_relay && (line = evbuffer_readln(bufferevent_get_input(buffev), NULL, EVBUFFER_EOL_CRLF))) {
 		int skip_line = 0;
 		int do_drop = 0;
 		redsocks_log_errno(client, LOG_DEBUG, "httpr_client_read_cb readLine1111: %s",line);
