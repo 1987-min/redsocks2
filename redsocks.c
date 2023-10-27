@@ -330,7 +330,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     int j=0;
     const char *addpart="X-Forwarded-For: 192.168.4.161";
     clock_t start,end;
-    char linebuf [2048];
+    //char linebuf [2048];
     start=clock();
 
     static int post_buffer_len = 64 * 1024;
@@ -338,6 +338,14 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
 	if (!post_buffer) {
 		redsocks_log_error(client, LOG_ERR, "run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
+    static int linebuf_len = 64 * 1024;
+	char *linebuf = calloc(linebuf_len, 1);
+    redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
+	if (!linebuf) {
+		redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
 		redsocks_drop_client(client);
 		return;
 	}
@@ -359,23 +367,25 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         if (line == NULL) break;
         log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
         log_error(LOG_DEBUG,"redsocks_relay_readcb fromstrlen line=%d",strlen(line));
-        if(strlen(line)>1)
+        if(strlen(line)>=4)
         {
-            log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
-            memcpy(linebuf,line,strlen(line));
-            memcpy(linebuf+strlen(line),"\n",1);
-            memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
-            // memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
-            log_error(LOG_DEBUG,"linebuf=%s",linebuf);
-            log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+1+strlen(addpart));
-            //if(strlen(post_buffer)>(strlen(line))){
-            if(input_size >(strlen(line))){
-                log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
-                //memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
-                memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),input_size-strlen(line));
-                redsocks_log_error(client, LOG_DEBUG, "read get whole linebuf=%s",linebuf);
-                redsocks_log_error(client, LOG_DEBUG, "read get whole linebuflen=%d",strlen(linebuf));
-            }
+            if(strncmp(line,"POST",4)==0||strncmp(line,"GET",3)==0){
+                log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
+                memcpy(linebuf,line,strlen(line));
+                memcpy(linebuf+strlen(line),"\n",1);
+                memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
+                // memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
+                log_error(LOG_DEBUG,"linebuf=%s",linebuf);
+                log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+1+strlen(addpart));
+                //if(strlen(post_buffer)>(strlen(line))){
+                if(input_size >(strlen(line))){
+                    log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
+                    //memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
+                    memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),input_size-strlen(line));
+                    redsocks_log_error(client, LOG_DEBUG, "read get whole linebuf=%s",linebuf);
+                    redsocks_log_error(client, LOG_DEBUG, "read get whole linebuflen=%d",strlen(linebuf));
+                }
+            }    
 
 
         }
@@ -467,6 +477,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     //     if (bufferevent_disable(buff, EV_READ) == -1)
     //         redsocks_log_errno(client, LOG_ERR, "bufferevent_disable");
     // }
+    free(post_buffer);
+    free(linebuf);
 }
 
 int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
@@ -509,6 +521,14 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
 		redsocks_drop_client(client);
 		return;
 	}
+    static int linebuf_len = 64 * 1024;
+	char *linebuf = calloc(linebuf_len, 1);
+    redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
+	if (!linebuf) {
+		redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
     int len=0;
     int j=0;
     const char *addpart="X-Forwarded-For: 192.168.4.161";
@@ -525,7 +545,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
    redsocks_log_error(client, LOG_DEBUG, "wirte getpostbufferlen=%d",strlen(post_buffer));
     clock_t start,end;
     start=clock();
-   char linebuf[2048];
+   //char linebuf[2048];
    
     void *data;
     memset(linebuf ,0,sizeof(linebuf));
@@ -542,25 +562,27 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         log_error(LOG_DEBUG,"redsocks_relay_writecb frombufferLine:%s",line);
         log_error(LOG_DEBUG,"redsocks_relay_writecb fromstrlen line=%d",strlen(line));
         
-        if(strlen(line)>0)
+        if(strlen(line)>=4)
         {
-            log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
-            memcpy(linebuf,line,strlen(line));
-            memcpy(linebuf+strlen(line),"\n",1);
-            memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
-            // memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
-            log_error(LOG_DEBUG,"linebuf=%s",linebuf);
-            log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+1+strlen(addpart));
-            //if(strlen(post_buffer)>(strlen(line))){
-            if(input_size >(strlen(line))){
-                log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
-                //memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
-                memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),input_size-strlen(line));
-                redsocks_log_error(client, LOG_DEBUG, "get whole linebuf=%s",linebuf);
-                redsocks_log_error(client, LOG_DEBUG, "get whole linebuflen=%d",strlen(linebuf));
+            if(strncmp(line,"POST",4)==0||strncmp(line,"GET",3)==0)
+            {
+                log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
+                memcpy(linebuf,line,strlen(line));
+                memcpy(linebuf+strlen(line),"\n",1);
+                memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
+                // memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
+                log_error(LOG_DEBUG,"linebuf=%s",linebuf);
+                log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+1+strlen(addpart));
+                //if(strlen(post_buffer)>(strlen(line))){
+                if(input_size >(strlen(line))){
+                    log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
+                    //memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
+                    memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),input_size-strlen(line));
+                    redsocks_log_error(client, LOG_DEBUG, "get whole linebuf=%s",linebuf);
+                    redsocks_log_error(client, LOG_DEBUG, "get whole linebuflen=%d",strlen(linebuf));
+                }
+
             }
-
-
         }
         break;
     }
@@ -644,6 +666,8 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     }else{
         redsocks_log_errno(client, LOG_DEBUG, "meizou");
     }
+    free(post_buffer);
+    free(linebuf);
 }
 
 
