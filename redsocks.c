@@ -333,64 +333,64 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     //char linebuf [2048];
     start=clock();
 
-//     static int post_buffer_len = 64 * 1024;
-// 	char *post_buffer = calloc(post_buffer_len, 1);
-//     redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
-// 	if (!post_buffer) {
-// 		redsocks_log_error(client, LOG_ERR, "run out of memory");
-// 		redsocks_drop_client(client);
-// 		return;
-// 	}
-//     static int linebuf_len = 64 * 1024;
-// 	char *linebuf = calloc(linebuf_len, 1);
-//     redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
-// 	if (!linebuf) {
-// 		redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
-// 		redsocks_drop_client(client);
-// 		return;
-// 	}
+    static int post_buffer_len = 64 * 1024;
+	char *post_buffer = calloc(post_buffer_len, 1);
+    redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
+	if (!post_buffer) {
+		redsocks_log_error(client, LOG_ERR, "run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
+    static int linebuf_len = 64 * 1024;
+	char *linebuf = calloc(linebuf_len, 1);
+    redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
+	if (!linebuf) {
+		redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
 
-//     size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
-//     // log_error(LOG_DEBUG,"read fromevbuffer input_size2:%zu",input_size);
-//     memset(post_buffer ,0,sizeof(post_buffer));
-//     memset(linebuf ,0,sizeof(linebuf));
-//     evbuffer_copyout(bufferevent_get_input(from), post_buffer, input_size);
+    size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
+    // log_error(LOG_DEBUG,"read fromevbuffer input_size2:%zu",input_size);
+    memset(post_buffer ,0,sizeof(post_buffer));
+    memset(linebuf ,0,sizeof(linebuf));
+    evbuffer_copyout(bufferevent_get_input(from), post_buffer, input_size);
 
 //     redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
 // //    redsocks_log_error(client, LOG_DEBUG, "read getpostbufferlen=%d",strlen(post_buffer));
 // //     for(;;){
     
 // //         line = NULL;
-//         line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
-// //         log_error(LOG_DEBUG,"before print readfromline");
+        line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
+//         log_error(LOG_DEBUG,"before print readfromline");
       
 // //         if (line == NULL) break;
-//         if(line != NULL){
-//             log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
-//     //         log_error(LOG_DEBUG,"redsocks_relay_readcb fromstrlen line=%d",strlen(line));
-//             if(strlen(line)>=4)
-//             {
-//                 if(strncmp(line,"POST",4)==0||strncmp(line,"GET",3)==0){
-//                     log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
-//                     memcpy(linebuf,line,strlen(line));
-//                     memcpy(linebuf+strlen(line),"\n",1);
-//                     memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
-//                     // memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
-//                     log_error(LOG_DEBUG,"linebuf=%s",linebuf);
-//                     log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+1+strlen(addpart));
-//                     //if(strlen(post_buffer)>(strlen(line))){
-//                     if(input_size >(strlen(line))){
-//                         log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
-//                         //memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
-//                         memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),input_size-strlen(line));
-//                         redsocks_log_error(client, LOG_DEBUG, "read get whole linebuf=%s",linebuf);
-//                         redsocks_log_error(client, LOG_DEBUG, "read get whole linebuflen=%d",strlen(linebuf));
-//                     }
-//                 }    
+        if(line != NULL){
+            log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
+    //         log_error(LOG_DEBUG,"redsocks_relay_readcb fromstrlen line=%d",strlen(line));
+            if(strlen(line)>=4)
+            {
+                if(strncmp(line,"POST",4)==0||strncmp(line,"GET",3)==0){
+                    log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
+                    memcpy(linebuf,line,strlen(line));
+                    memcpy(linebuf+strlen(line),"\n",1);
+                    memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
+                    // memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
+                    log_error(LOG_DEBUG,"linebuf=%s",linebuf);
+                    log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+1+strlen(addpart));
+                    //if(strlen(post_buffer)>(strlen(line))){
+                    if(input_size >(strlen(line))){
+                        log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
+                        //memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
+                        memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),input_size-strlen(line));
+                        redsocks_log_error(client, LOG_DEBUG, "read get whole linebuf=%s",linebuf);
+                        redsocks_log_error(client, LOG_DEBUG, "read get whole linebuflen=%d",strlen(linebuf));
+                    }
+                }    
 
 
-//             }
-//         }
+            }
+        }
 //         break;
 //     }
 
@@ -430,7 +430,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 //         log_error(LOG_DEBUG,"redsocks_relay_readcb outtobufferLine:%s",line);
 //         log_error(LOG_DEBUG,"redsocks_relay_readcb outtostrlen line=%d",strlen(line));
 //     }
-    usleep(2);
+    // usleep(2);
     free(line);
     end=clock();
     log_error(LOG_DEBUG,"read add haoshi=%f",(double)(end-start)/CLOCKS_PER_SEC);
