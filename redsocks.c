@@ -574,7 +574,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
 // 	}
 //     int len=0;
 //     int j=0;
-//     const char *addpart="X-Forwarded-For: 192.168.4.161";
+    const char *addpart="X-Forwarded-For: 192.168.4.161";
 //     char *strev1;
 
 //     memset(post_buffer ,0,sizeof(post_buffer));
