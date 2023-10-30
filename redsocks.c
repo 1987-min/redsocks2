@@ -467,12 +467,12 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
                     unsigned char tmp=(unsigned char)(strchr(post_buffer,'\n')-post_buffer);
                     char *q=(tmp>0)?strndup(post_buffer,tmp):strdup(post_buffer);
                     redsocks_log_error(client, LOG_DEBUG, "q1=%s",q);
-                    strncat(q,"\n",1);
+                    strcat(q,"\n");
                     redsocks_log_error(client, LOG_DEBUG, "q2=%s",q);
-                    strncat(q,addpart,strlen(addpart));
+                    strcat(q,addpart);
                     redsocks_log_error(client, LOG_DEBUG, "q3=%s",q);
                     memset(post_buffer,0,strlen(post_buffer));
-                    strcat(q,p,strlen(p));
+                    strcat(q,p);
                     redsocks_log_error(client, LOG_DEBUG, "q4=%s",q);
                 
                 }   
