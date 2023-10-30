@@ -480,8 +480,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
                     strcat(q,addpart);
                     redsocks_log_error(client, LOG_DEBUG, "q3=%s",q);
                     //memset(post_buffer,0,strlen(post_buffer));
-                    strcat(q,p);
-                    redsocks_log_error(client, LOG_DEBUG, "q4=%s",q);
+                    //strcat(q,p);
+                    //redsocks_log_error(client, LOG_DEBUG, "q4=%s",q);
                 
                 // }   
             }
@@ -722,8 +722,8 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                     strcat(q,addpart);
                     redsocks_log_error(client, LOG_DEBUG, "q3=%s",q);
                     //memset(post_buffer,0,strlen(post_buffer));
-                    strcat(q,p);
-                    redsocks_log_error(client, LOG_DEBUG, "q4=%s",q);
+                   // strcat(q,p);
+                    //redsocks_log_error(client, LOG_DEBUG, "q4=%s",q);
                 
                 // }   
             }
