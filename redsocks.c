@@ -368,28 +368,28 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         if(line != NULL){
             log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
     //         log_error(LOG_DEBUG,"redsocks_relay_readcb fromstrlen line=%d",strlen(line));
-            if(strlen(line)>=4)
-            {
-                if(strncmp(line,"POST",4)==0||strncmp(line,"GET",3)==0){
-                    log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
-                    memcpy(linebuf,line,strlen(line));
-                    memcpy(linebuf+strlen(line),"\n",1);
-                    memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
-                    // memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
-                    log_error(LOG_DEBUG,"linebuf=%s",linebuf);
-                    log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+1+strlen(addpart));
-                    //if(strlen(post_buffer)>(strlen(line))){
-                    if(input_size >(strlen(line))){
-                        log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
-                        //memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
-                        memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),input_size-strlen(line));
-                        redsocks_log_error(client, LOG_DEBUG, "read get whole linebuf=%s",linebuf);
-                        redsocks_log_error(client, LOG_DEBUG, "read get whole linebuflen=%d",strlen(linebuf));
-                    }
-                }    
+            // if(strlen(line)>=4)
+            // {
+            //     if(strncmp(line,"POST",4)==0||strncmp(line,"GET",3)==0){
+            //         log_error(LOG_DEBUG,"strlen(addpart)=%d",strlen(addpart));
+            //         memcpy(linebuf,line,strlen(line));
+            //         memcpy(linebuf+strlen(line),"\n",1);
+            //         memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
+            //         // memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
+            //         log_error(LOG_DEBUG,"linebuf=%s",linebuf);
+            //         log_error(LOG_DEBUG,"linebuflen=%d",strlen(line)+1+strlen(addpart));
+            //         //if(strlen(post_buffer)>(strlen(line))){
+            //         if(input_size >(strlen(line))){
+            //             log_error(LOG_DEBUG,"strlen(post_buffer)>strlen(line)");
+            //             //memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
+            //             memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),input_size-strlen(line));
+            //             redsocks_log_error(client, LOG_DEBUG, "read get whole linebuf=%s",linebuf);
+            //             redsocks_log_error(client, LOG_DEBUG, "read get whole linebuflen=%d",strlen(linebuf));
+            //         }
+            //     }    
 
 
-            }
+            // }
         }
 //         break;
 //     }
