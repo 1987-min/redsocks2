@@ -457,10 +457,27 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         //     // redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         // }else{
             evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
-            char *p=strchr(post_buffer,'\n');
-            unsigned char tmp=(unsigned char)(strchr(post_buffer,'\n')-post_buffer);
-            char *q=(tmp>0)?strndup(post_buffer,tmp):strdup(post_buffer);
-            redsocks_log_error(client, LOG_DEBUG, "q=%s",q);
+            redsocks_log_error(client, LOG_DEBUG, "31312312312");
+            if(post_buffer_len>2){
+                redsocks_log_error(client, LOG_DEBUG, "post_buffer_len=%d",post_buffer_len);
+                if(strncmp(post_buffer,"POST",4)==0||strncmp(post_buffer,"GET",3)==0)
+                {
+                    redsocks_log_error(client, LOG_DEBUG, "POSTORGET");
+                    char *p=strchr(post_buffer,'\n');
+                    unsigned char tmp=(unsigned char)(strchr(post_buffer,'\n')-post_buffer);
+                    char *q=(tmp>0)?strndup(post_buffer,tmp):strdup(post_buffer);
+                    redsocks_log_error(client, LOG_DEBUG, "q1=%s",q);
+                    strncat(q,"\n",1);
+                    redsocks_log_error(client, LOG_DEBUG, "q2=%s",q);
+                    strncat(q,addpart,strlen(addpart));
+                    redsocks_log_error(client, LOG_DEBUG, "q3=%s",q);
+                    memset(post_buffer,0,strlen(post_buffer));
+                    strcat(q,p,strlen(p));
+                    redsocks_log_error(client, LOG_DEBUG, "q4=%s",q);
+                
+                }   
+            }
+    
             // redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
             //line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
             // if(line != NULL)  log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
