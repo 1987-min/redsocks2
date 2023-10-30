@@ -457,16 +457,20 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         //     // redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         // }else{
             evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
-            redsocks_log_error(client, LOG_DEBUG, "31312312312");
+            redsocks_log_error(client, LOG_DEBUG, "post_buffer:::::%s",post_buffer);
             if(post_buffer_len>2){
                 redsocks_log_error(client, LOG_DEBUG, "post_buffer_len=%d",post_buffer_len);
-                if(strncmp(post_buffer,"POST",4)==0||strncmp(post_buffer,"GET",3)==0)
-                {
-                    redsocks_log_error(client, LOG_DEBUG, "POSTORGET");
+                // if(strncmp(post_buffer,"POST",4)==0||strncmp(post_buffer,"GET",3)==0)
+                // {
+                    //char *a =memcpy()
+                    redsocks_log_error(client, LOG_DEBUG, "jinre");
                     char *p=strchr(post_buffer,'\n');
                     unsigned char tmp=(unsigned char)(strchr(post_buffer,'\n')-post_buffer);
                     char *q=(tmp>0)?strndup(post_buffer,tmp):strdup(post_buffer);
                     redsocks_log_error(client, LOG_DEBUG, "q1=%s",q);
+                    if(strncmp(q,"POST",4)==0||strncmp(q,"GET",3)==0){
+                            redsocks_log_error(client, LOG_DEBUG, "POSTGET");
+                    }
                     strcat(q,"\n");
                     redsocks_log_error(client, LOG_DEBUG, "q2=%s",q);
                     strcat(q,addpart);
@@ -475,7 +479,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
                     strcat(q,p);
                     redsocks_log_error(client, LOG_DEBUG, "q4=%s",q);
                 
-                }   
+                // }   
             }
     
             // redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
