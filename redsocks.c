@@ -480,8 +480,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     //     if (bufferevent_disable(buff, EV_READ) == -1)
     //         redsocks_log_errno(client, LOG_ERR, "bufferevent_disable");
     // }
-     free(post_buffer);
-     free(linebuf);
+    //  free(post_buffer);
+    //  free(linebuf);
 }
 
 int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
