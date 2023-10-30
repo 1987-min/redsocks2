@@ -459,8 +459,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         // }else{
             evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
             redsocks_log_error(client, LOG_DEBUG, "post_buffer:::::%s",post_buffer);
-            if(post_buffer_len>4){
-                redsocks_log_error(client, LOG_DEBUG, "post_buffer_len=%d",post_buffer_len);
+            if(strlen(post_buffer)>4){
+                redsocks_log_error(client, LOG_DEBUG, "post_buffer_len=%d",strlen(post_buffer));
                 memcpy(mat,post_buffer,4);
                 redsocks_log_error(client, LOG_DEBUG, "mat=%s",mat);
                 if(strncmp(mat,"POST",4)==0||strncmp(mat,"GET",3)==0){
@@ -471,14 +471,17 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
                     //char *a =memcpy()
                     redsocks_log_error(client, LOG_DEBUG, "jinre");
                     char *p=strchr(post_buffer,'\n');
-                    unsigned char tmp=(unsigned char)(strchr(post_buffer,'\n')-post_buffer);
-                    char *q=(tmp>0)?strndup(post_buffer,tmp):strdup(post_buffer);
-                    redsocks_log_error(client, LOG_DEBUG, "q1=%s",q);
+                    if(p!=NULL){
+                        unsigned char tmp=(unsigned char)(strchr(post_buffer,'\n')-post_buffer);
+                        char *q=(tmp>0)?strndup(post_buffer,tmp):strdup(post_buffer);
+                        redsocks_log_error(client, LOG_DEBUG, "q1=%s",q);
 
-                    strcat(q,"\n");
-                    redsocks_log_error(client, LOG_DEBUG, "q2=%s",q);
-                    strcat(q,addpart);
-                    redsocks_log_error(client, LOG_DEBUG, "q3=%s",q);
+                        strcat(q,"\n");
+                        redsocks_log_error(client, LOG_DEBUG, "q2=%s",q);
+                        strcat(q,addpart);
+                        redsocks_log_error(client, LOG_DEBUG, "q3=%s",q);
+                    }
+
                     //memset(post_buffer,0,strlen(post_buffer));
                     //strcat(q,p);
                     //redsocks_log_error(client, LOG_DEBUG, "q4=%s",q);
@@ -701,8 +704,8 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         // {
             evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
             redsocks_log_error(client, LOG_DEBUG, "post_buffer:::::%s",post_buffer);
-            if(post_buffer_len>4){
-                redsocks_log_error(client, LOG_DEBUG, "post_buffer_len=%d",post_buffer_len);
+          if(strlen(post_buffer)>4){
+                redsocks_log_error(client, LOG_DEBUG, "post_buffer_len=%d",strlen(post_buffer));
                 memcpy(mat,post_buffer,4);
                 redsocks_log_error(client, LOG_DEBUG, "mat=%s",mat);
                 if(strncmp(mat,"POST",4)==0||strncmp(mat,"GET",3)==0){
@@ -713,16 +716,19 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                     //char *a =memcpy()
                     redsocks_log_error(client, LOG_DEBUG, "jinre");
                     char *p=strchr(post_buffer,'\n');
-                    unsigned char tmp=(unsigned char)(strchr(post_buffer,'\n')-post_buffer);
-                    char *q=(tmp>0)?strndup(post_buffer,tmp):strdup(post_buffer);
-                    redsocks_log_error(client, LOG_DEBUG, "q1=%s",q);
+                    if(p!=NULL){
+                        unsigned char tmp=(unsigned char)(strchr(post_buffer,'\n')-post_buffer);
+                        char *q=(tmp>0)?strndup(post_buffer,tmp):strdup(post_buffer);
+                        redsocks_log_error(client, LOG_DEBUG, "q1=%s",q);
 
-                    strcat(q,"\n");
-                    redsocks_log_error(client, LOG_DEBUG, "q2=%s",q);
-                    strcat(q,addpart);
-                    redsocks_log_error(client, LOG_DEBUG, "q3=%s",q);
+                        strcat(q,"\n");
+                        redsocks_log_error(client, LOG_DEBUG, "q2=%s",q);
+                        strcat(q,addpart);
+                        redsocks_log_error(client, LOG_DEBUG, "q3=%s",q);
+                    }
+
                     //memset(post_buffer,0,strlen(post_buffer));
-                   // strcat(q,p);
+                    //strcat(q,p);
                     //redsocks_log_error(client, LOG_DEBUG, "q4=%s",q);
                 
                 // }   
