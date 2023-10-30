@@ -457,9 +457,17 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         //     // redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         // }else{
             evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
+            char *p=strchr(post_buffer,'\n');
+            unsigned char tmp=(unsigned char)(strchr(post_buffer,'\n')-post_buffer);
+            char *q=(tmp>0)?strndup(post_buffer,tmp):strdup(post_buffer);
+            redsocks_log_error(client, LOG_DEBUG, "q=%s",q);
             // redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
-            line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
-             if(line != NULL)  log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
+            //line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
+            // if(line != NULL)  log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
+
+
+
+
 
             if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
