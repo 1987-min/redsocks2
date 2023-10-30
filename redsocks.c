@@ -350,7 +350,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 	// 	return;
 	// }
 
-    size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
+    // size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
     // log_error(LOG_DEBUG,"read fromevbuffer input_size2:%zu",input_size);
     // memset(post_buffer ,0,sizeof(post_buffer));
     // memset(linebuf ,0,sizeof(linebuf));
@@ -361,12 +361,12 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 // //     for(;;){
     
 // //         line = NULL;
-        line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
+        // line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
 //         log_error(LOG_DEBUG,"before print readfromline");
       
 // //         if (line == NULL) break;
-        if(line != NULL){
-            log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
+        // if(line != NULL){
+            // log_error(LOG_DEBUG,"redsocks_relay_readcb frombufferLine:%s",line);
     //         log_error(LOG_DEBUG,"redsocks_relay_readcb fromstrlen line=%d",strlen(line));
             // if(strlen(line)>=4)
             // {
@@ -390,7 +390,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 
 
             // }
-        }
+        // }
 //         break;
 //     }
 
