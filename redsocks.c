@@ -456,6 +456,9 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 
         //     // redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         // }else{
+            evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
+            redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
+
             if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1)
             redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
         //  }
