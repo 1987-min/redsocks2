@@ -333,27 +333,27 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     //char linebuf [2048];
     start=clock();
 
-    static int post_buffer_len = 64 * 1024;
-	char *post_buffer = calloc(post_buffer_len, 1);
-    redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
-	if (!post_buffer) {
-		redsocks_log_error(client, LOG_ERR, "run out of memory");
-		redsocks_drop_client(client);
-		return;
-	}
-    static int linebuf_len = 64 * 1024;
-	char *linebuf = calloc(linebuf_len, 1);
-    redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
-	if (!linebuf) {
-		redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
-		redsocks_drop_client(client);
-		return;
-	}
+    // static int post_buffer_len = 64 * 1024;
+	// char *post_buffer = calloc(post_buffer_len, 1);
+    // redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
+	// if (!post_buffer) {
+	// 	redsocks_log_error(client, LOG_ERR, "run out of memory");
+	// 	redsocks_drop_client(client);
+	// 	return;
+	// }
+    // static int linebuf_len = 64 * 1024;
+	// char *linebuf = calloc(linebuf_len, 1);
+    // redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
+	// if (!linebuf) {
+	// 	redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
+	// 	redsocks_drop_client(client);
+	// 	return;
+	// }
 
     size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
     // log_error(LOG_DEBUG,"read fromevbuffer input_size2:%zu",input_size);
-    memset(post_buffer ,0,sizeof(post_buffer));
-    memset(linebuf ,0,sizeof(linebuf));
+    // memset(post_buffer ,0,sizeof(post_buffer));
+    // memset(linebuf ,0,sizeof(linebuf));
     // evbuffer_copyout(bufferevent_get_input(from), post_buffer, input_size);
 
 //     redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
