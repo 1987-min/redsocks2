@@ -354,7 +354,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     // log_error(LOG_DEBUG,"read fromevbuffer input_size2:%zu",input_size);
     memset(post_buffer ,0,sizeof(post_buffer));
     memset(linebuf ,0,sizeof(linebuf));
-    evbuffer_copyout(bufferevent_get_input(from), post_buffer, input_size);
+    // evbuffer_copyout(bufferevent_get_input(from), post_buffer, input_size);
 
 //     redsocks_log_error(client, LOG_DEBUG, "read getpostbuffer=%s",post_buffer);
 // //    redsocks_log_error(client, LOG_DEBUG, "read getpostbufferlen=%d",strlen(post_buffer));
