@@ -333,15 +333,15 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     //char linebuf [2048];
     start=clock();
 
-    // static int post_buffer_len = 64 * 1024;
-	// char *post_buffer = calloc(post_buffer_len, 1);
-    // redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
-	// if (!post_buffer) {
-	// 	redsocks_log_error(client, LOG_ERR, "run out of memory");
-	// 	redsocks_drop_client(client);
-	// 	return;
-	// }
-    // static int linebuf_len = 64 * 1024;
+    static int post_buffer_len = 32 * 1024;
+	char *post_buffer = calloc(post_buffer_len, 1);
+    redsocks_log_error(client, LOG_DEBUG, "postbuffer=%s",post_buffer);
+	if (!post_buffer) {
+		redsocks_log_error(client, LOG_ERR, "run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
+    // static int linebuf_len = 32 * 1024;
 	// char *linebuf = calloc(linebuf_len, 1);
     // redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
 	// if (!linebuf) {
@@ -480,8 +480,8 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     //     if (bufferevent_disable(buff, EV_READ) == -1)
     //         redsocks_log_errno(client, LOG_ERR, "bufferevent_disable");
     // }
-    //  free(post_buffer);
-    //  free(linebuf);
+      free(post_buffer);
+      //free(linebuf);
 }
 
 int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
