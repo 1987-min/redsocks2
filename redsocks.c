@@ -713,7 +713,12 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                             redsocks_log_error(client, LOG_DEBUG, "POSTGET");
                             line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
                             redsocks_log_error(client, LOG_DEBUG,"line=%s", line);
-
+                            memcpy(linebuf,line,strlen(line));
+                            memcpy(linebuf+strlen(line),"\n",1);
+                            memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
+                            if(strlen(post_buffer)>strlen(line))
+                                memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
+                            redsocks_log_error(client, LOG_DEBUG,"linebuf=%s", linebuf);
                             // if (at_get_words('\n',post_buffer,line1,1 ) != 0)
                             // {
                             //    // printf("out 0:%s",word[0]);
