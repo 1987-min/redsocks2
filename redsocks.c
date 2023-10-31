@@ -716,6 +716,12 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                             // line1 = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
                             redsocks_log_error(client, LOG_DEBUG,"line=%s", line);
                             // redsocks_log_error(client, LOG_DEBUG,"line1=%s", line1);
+                            // if(strlen(line)>0 && strlen(line1)<=0){
+                            //    memcpy(linebuf+strlen(line),"\n",1);
+                            //    memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
+                            //     if(strlen(post_buffer)>strlen(line))
+                            //     memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
+                            // }
                             memcpy(linebuf,line,strlen(line));
                             memcpy(linebuf+strlen(line),"\r\n",2);
                             memcpy(linebuf+strlen(line)+2,addpart,strlen(addpart));
@@ -760,9 +766,15 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                 
                 // }   
             }
-            redsocks_log_errno(client, LOG_DEBUG, "choose from");
-            if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1);
-            redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
+            if(strlen(linebuf)>0){
+                redsocks_log_errno(client, LOG_DEBUG, "before write");
+                bufferevent_write(to,linebuf,strlen(linebuf));
+                redsocks_log_errno(client, LOG_DEBUG, "after write");
+            }else{
+                redsocks_log_errno(client, LOG_DEBUG, "choose from");
+                if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1);
+                redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
+            }
         //  }
 
         if (!(from_evshut & EV_READ) && bufferevent_enable(from, EV_READ) == -1);
