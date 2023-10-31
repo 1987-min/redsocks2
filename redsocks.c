@@ -325,7 +325,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 {
     log_error(LOG_NOTICE,"redsocks_relay_readcb");
     char *line = NULL;
-    char *line1 = NULL;
+    // char *line1 = NULL;
     int len=0;
     int j=0;
     const char *addpart="X-Forwarded-For: 192.168.4.161";
@@ -459,10 +459,10 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         // }else{
             evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
             redsocks_log_error(client, LOG_DEBUG, "read post_buffer:::::%s",post_buffer);
-                            line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
-                            line1 = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
-                            redsocks_log_error(client, LOG_DEBUG,"read line=%s", line);
-                            redsocks_log_error(client, LOG_DEBUG,"read line1=%s", line1);
+                            // line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
+                            // line1 = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
+                            // redsocks_log_error(client, LOG_DEBUG,"read line=%s", line);
+                            // redsocks_log_error(client, LOG_DEBUG,"read line1=%s", line1);
          /*   if(strlen(post_buffer)>4){
                 redsocks_log_error(client, LOG_DEBUG, "post_buffer_len=%d",strlen(post_buffer));
                 memcpy(mat,post_buffer,4);
@@ -529,7 +529,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
      free(post_buffer);
       free(linebuf);
       free(line);
-      free(line1);
+    //   free(line1);
 }
 
 int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
@@ -563,7 +563,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     assert(from == client->client || from == client->relay);
     unsigned short from_evshut = from == client->client ? client->client_evshut : client->relay_evshut;
     char *line = NULL;
-     char *line1 = NULL;
+    //  char *line1 = NULL;
     char mat[20];
     //char line1[200];
     // char *line1 = NULL;
@@ -719,9 +719,9 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                 if(strncmp(mat,"POST",4)==0||strncmp(mat,"GET",3)==0){
                             redsocks_log_error(client, LOG_DEBUG, "POSTGET");
                             line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
-                            line1 = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
+                            // line1 = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
                             redsocks_log_error(client, LOG_DEBUG,"line=%s", line);
-                            redsocks_log_error(client, LOG_DEBUG,"line1=%s", line1);
+                            // redsocks_log_error(client, LOG_DEBUG,"line1=%s", line1);
                             // if(strlen(line)>0 && strlen(line1)<=0){
                             //    memcpy(linebuf+strlen(line),"\n",1);
                             //    memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
@@ -793,7 +793,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     free(post_buffer);
      free(linebuf);
      free(line);
-     free(line1);
+    //  free(line1);
 }
 
 
