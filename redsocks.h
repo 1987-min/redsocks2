@@ -123,8 +123,6 @@ void redsocks_log_write_plain(
 you are doing with */
 int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from, struct bufferevent *to);
 
-// int at_get_words(char chop,char *srcStr, char **word, int size);
-
 /* vim:set tabstop=4 softtabstop=4 shiftwidth=4: */
 /* vim:set foldmethod=marker foldlevel=32 foldmarker={,}: */
 #endif /* REDSOCKS_H_WED_JAN_24_22_17_11_2007 */

@@ -551,41 +551,6 @@ int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from
     return 0;
 }
 
-// int at_get_words(char chop,char *srcStr, char **word, int size)
-// {
-//     int index = 0;
-//     int i = 0;
-//     char *str = srcStr;
-//     while (*(str + i) != '\0')
-//     {
-//         if (*(str + i) == chop)
-//         {
-//             word[index] = str;
-//             word[index++][i] = '\0';
-//             str = (str + i + 1);
-//             i = -1;
-//         }
-//         if (*(str + i) == '\r')
-//         {
-//             word[index] = str;
-//             word[index++][i] = '\0';
-//             str = (str + i);
-//             i = 0;
-//             break;
-//         }
-//         if (index >= size)
-//         {
-//             return index;
-//         }
-//         i++;
-//     }
-//     if (strlen(str) > 0)
-//     {
-//         word[index++] = str;
-//     }
-//     return index;
-// }
-
 static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
 {
     log_error(LOG_NOTICE,"redsocks_relay_writecb");
