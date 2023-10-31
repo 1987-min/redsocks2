@@ -551,6 +551,41 @@ int process_shutdown_on_write_(redsocks_client *client, struct bufferevent *from
     return 0;
 }
 
+// int at_get_words(char chop,char *srcStr, char **word, int size)
+// {
+//     int index = 0;
+//     int i = 0;
+//     char *str = srcStr;
+//     while (*(str + i) != '\0')
+//     {
+//         if (*(str + i) == chop)
+//         {
+//             word[index] = str;
+//             word[index++][i] = '\0';
+//             str = (str + i + 1);
+//             i = -1;
+//         }
+//         if (*(str + i) == '\r')
+//         {
+//             word[index] = str;
+//             word[index++][i] = '\0';
+//             str = (str + i);
+//             i = 0;
+//             break;
+//         }
+//         if (index >= size)
+//         {
+//             return index;
+//         }
+//         i++;
+//     }
+//     if (strlen(str) > 0)
+//     {
+//         word[index++] = str;
+//     }
+//     return index;
+// }
+
 static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *from, struct bufferevent *to)
 {
     log_error(LOG_NOTICE,"redsocks_relay_writecb");
@@ -558,6 +593,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     unsigned short from_evshut = from == client->client ? client->client_evshut : client->relay_evshut;
     char *line = NULL;
     char mat[20];
+    char line1[200];
     // char *line1 = NULL;
     static int post_buffer_len = 32 * 1024;
 	char *post_buffer = calloc(post_buffer_len, 1);
@@ -710,14 +746,22 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                 redsocks_log_error(client, LOG_DEBUG, "mat=%s",mat);
                 if(strncmp(mat,"POST",4)==0||strncmp(mat,"GET",3)==0){
                             redsocks_log_error(client, LOG_DEBUG, "POSTGET");
-                        for(int i =  0; i <strlen(post_buffer);i++){
-                            if(strcmp(post_buffer[i],"\n")==0){
-                                memcpy(linebuf,post_buffer,i+1);
-                                redsocks_log_error(client, LOG_DEBUG, "linebuf=%s",linebuf);
-                                break;
-                            }
+                            line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
+                            redsocks_log_error(client, "line=%s", line);
 
-                        }    
+                            // if (at_get_words('\n',post_buffer,line1,1 ) != 0)
+                            // {
+                            //    // printf("out 0:%s",word[0]);
+                            //     redsocks_log_error(client, LOG_DEBUG, "line1 0=%s",line1[0]);
+                            // }
+                        // for(int i =  0; i <strlen(post_buffer);i++){
+                        //     if(strcmp(post_buffer[i],"\n")==0){
+                        //         memcpy(linebuf,post_buffer,i+1);
+                        //         redsocks_log_error(client, LOG_DEBUG, "linebuf=%s",linebuf);
+                        //         break;
+                        //     }
+
+                        // }    
                     }
                 // if(strncmp(post_buffer,"POST",4)==0||strncmp(post_buffer,"GET",3)==0)
                 // {
