@@ -46,7 +46,7 @@
 
 #include <openssl/evp.h>
 typedef EVP_CIPHER cipher_kt_t;
-typedef EVP_CIPHER_CTX cipher_evp_t;
+//typedef EVP_CIPHER_CTX cipher_evp_t;
 typedef EVP_MD digest_type_t;
 #define MAX_KEY_LENGTH EVP_MAX_KEY_LENGTH
 #define MAX_IV_LENGTH EVP_MAX_IV_LENGTH
@@ -57,7 +57,7 @@ typedef EVP_MD digest_type_t;
 #include <polarssl/cipher.h>
 #include <polarssl/md.h>
 typedef cipher_info_t cipher_kt_t;
-typedef cipher_context_t cipher_evp_t;
+//typedef cipher_context_t cipher_evp_t;
 typedef md_info_t digest_type_t;
 #define MAX_KEY_LENGTH 64
 #define MAX_IV_LENGTH POLARSSL_MAX_IV_LENGTH
@@ -89,7 +89,27 @@ typedef struct {
 #endif
 
 typedef struct {
-    cipher_evp_t evp;
+    const EVP_CIPHER *cipher;
+    ENGINE *engine;             /* functional reference if 'cipher' is
+                                 * ENGINE-provided */
+    int encrypt;                /* encrypt or decrypt */
+    int buf_len;                /* number we have left */
+    unsigned char oiv[EVP_MAX_IV_LENGTH]; /* original iv */
+    unsigned char iv[EVP_MAX_IV_LENGTH]; /* working iv */
+    unsigned char buf[EVP_MAX_BLOCK_LENGTH]; /* saved partial block */
+    int num;                    /* used by cfb/ofb/ctr mode */
+    /* FIXME: Should this even exist? It appears unused */
+    void *app_data;             /* application stuff */
+    int key_len;                /* May change for variable length cipher */
+    unsigned long flags;        /* Various flags */
+    void *cipher_data;          /* per EVP data */
+    int final_used;
+    int block_mask;
+    unsigned char final[EVP_MAX_BLOCK_LENGTH]; /* possible final block */
+} evp_cipher_ctx_st/* EVP_CIPHER_CTX */ ;
+
+typedef struct {
+    evp_cipher_ctx_st evp;
 #ifdef USE_CRYPTO_APPLECC
     cipher_cc_t cc;
 #endif

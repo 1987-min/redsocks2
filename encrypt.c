@@ -547,7 +547,7 @@ static int cipher_context_init(const enc_info * info, cipher_ctx_t *ctx, int enc
     }
 #endif
 
-    cipher_evp_t *evp = &ctx->evp;
+    evp_cipher_ctx_st *evp = &ctx->evp;
     const cipher_kt_t *cipher = get_cipher_type(method);
 #if defined(USE_CRYPTO_OPENSSL)
     if (cipher == NULL) {
@@ -642,7 +642,7 @@ static void cipher_context_set_iv(const enc_info * info, cipher_ctx_t *ctx, uint
     }
 #endif
 
-    cipher_evp_t *evp = &ctx->evp;
+    evp_cipher_ctx_st *evp = &ctx->evp;
     if (evp == NULL) {
         //LOGE("cipher_context_set_iv(): Cipher context is null");
         return;
@@ -696,7 +696,7 @@ static void cipher_context_release(enc_info * info, cipher_ctx_t *ctx)
     }
 #endif
 
-    cipher_evp_t *evp = &ctx->evp;
+    evp_cipher_ctx_st *evp = &ctx->evp;
 #if defined(USE_CRYPTO_OPENSSL)
     EVP_CIPHER_CTX_cleanup(evp);
 #elif defined(USE_CRYPTO_POLARSSL)
@@ -716,7 +716,7 @@ static int cipher_context_update(cipher_ctx_t *ctx, uint8_t *output, int *olen,
         return (ret == kCCSuccess) ? 1 : 0;
     }
 #endif
-    cipher_evp_t *evp = &ctx->evp;
+    evp_cipher_ctx_st *evp = &ctx->evp;
 #if defined(USE_CRYPTO_OPENSSL)
     return EVP_CipherUpdate(evp, (uint8_t *)output, olen,
                             (const uint8_t *)input, (size_t)ilen);
@@ -916,7 +916,7 @@ static int enc_key_init(enc_info * info, int method, const char *pass)
     uint8_t iv[MAX_IV_LENGTH];
 
     cipher_kt_t *cipher = NULL;
-    cipher_kt_t cipher_info;
+    //cipher_kt_t cipher_info;
 
 
     if (method == SALSA20 || method == CHACHA20) {
@@ -944,10 +944,10 @@ static int enc_key_init(enc_info * info, int method, const char *pass)
         do {
 #if defined(USE_CRYPTO_POLARSSL) && defined(USE_CRYPTO_APPLECC)
             if (supported_ciphers_applecc[method] != kCCAlgorithmInvalid) {
-                cipher_info.base = NULL;
-                cipher_info.key_length = supported_ciphers_key_size[method] * 8;
-                cipher_info.iv_size = supported_ciphers_iv_size[method];
-                cipher = (cipher_kt_t *)&cipher_info;
+                //cipher_info.base = NULL;
+                //cipher_info.key_length = supported_ciphers_key_size[method] * 8;
+                //cipher_info.iv_size = supported_ciphers_iv_size[method];
+                //cipher = (cipher_kt_t *)&cipher_info;
                 break;
             }
 #endif

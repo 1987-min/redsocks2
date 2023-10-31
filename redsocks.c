@@ -712,7 +712,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                 if(strncmp(mat,"POST",4)==0||strncmp(mat,"GET",3)==0){
                             redsocks_log_error(client, LOG_DEBUG, "POSTGET");
                             line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
-                            redsocks_log_error(client, "line=%s", line);
+                            redsocks_log_error(client, LOG_DEBUG,"line=%s", line);
 
                             // if (at_get_words('\n',post_buffer,line1,1 ) != 0)
                             // {
