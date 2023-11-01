@@ -767,7 +767,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                             memcpy(line,post_buffer,i+1);
                             //line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
                             // line1 = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
-                            redsocks_log_error(client, LOG_DEBUG,"line=%s", line);
+                            //redsocks_log_error(client, LOG_DEBUG,"line=%s", line);
                             // evbuffer_copyout(bufferevent_get_input(from), tobuf, tobuf_len);
                             // redsocks_log_error(client, LOG_DEBUG, "lack line post_buffer:::::%s",tobuf);
 
@@ -778,7 +778,9 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                             //     if(strlen(post_buffer)>strlen(line))
                             //     memcpy(linebuf+strlen(line)+1+strlen(addpart),post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
                             // }
+                            redsocks_log_error(client, LOG_DEBUG, "sss");
                             if(strlen(line)>0){
+                                 redsocks_log_error(client, LOG_DEBUG, "qqqq");
                                 memcpy(linebuf,line,strlen(line));
                                 //memcpy(linebuf+strlen(line),"\r\n",2);
                                 //memcpy(linebuf+strlen(line)+2,addpart,strlen(addpart));
@@ -786,6 +788,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                                 memcpy(linebuf+strlen(line)+strlen(addpart),"\r\n",2);
                                 // memcpy(linebuf+strlen(line),"\n",1);
                                 // memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
+                                redsocks_log_error(client, LOG_DEBUG, "kkk");
                                 if(strlen(post_buffer)>strlen(line))
                                     //memcpy(linebuf+strlen(line)+2+strlen(addpart),post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
                                     memcpy(linebuf+strlen(line)+strlen(addpart)+2,post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
