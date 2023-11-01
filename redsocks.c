@@ -758,11 +758,18 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                 if(strncmp(mat,"POST",4)==0||strncmp(mat,"GET",3)==0){
                             line=NULL;
                             redsocks_log_error(client, LOG_DEBUG, "POSTGET");
-                            line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
+                            int i =0;
+                            for(i=0;i<strlen(post_buffer);i++){
+                                 redsocks_log_error(client, LOG_DEBUG, "post_buffer zhi=%s",post_buffer[i]);
+                                 if(post_buffer[i]=='\n') break;
+                            }
+                            redsocks_log_error(client, LOG_DEBUG, "i=%d",i);
+                            memcpy(line,post_buffer,i+1);
+                            //line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
                             // line1 = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
                             redsocks_log_error(client, LOG_DEBUG,"line=%s", line);
-                            evbuffer_copyout(bufferevent_get_input(from), tobuf, tobuf_len);
-                            redsocks_log_error(client, LOG_DEBUG, "lack line post_buffer:::::%s",tobuf);
+                            // evbuffer_copyout(bufferevent_get_input(from), tobuf, tobuf_len);
+                            // redsocks_log_error(client, LOG_DEBUG, "lack line post_buffer:::::%s",tobuf);
 
                             // redsocks_log_error(client, LOG_DEBUG,"line1=%s", line1);
                             // if(strlen(line)>0 && strlen(line1)<=0){
@@ -773,12 +780,15 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                             // }
                             if(strlen(line)>0){
                                 memcpy(linebuf,line,strlen(line));
-                                memcpy(linebuf+strlen(line),"\r\n",2);
-                                memcpy(linebuf+strlen(line)+2,addpart,strlen(addpart));
+                                //memcpy(linebuf+strlen(line),"\r\n",2);
+                                //memcpy(linebuf+strlen(line)+2,addpart,strlen(addpart));
+                                memcpy(linebuf+strlen(line),addpart,strlen(addpart));
+                                memcpy(linebuf+strlen(line)+strlen(addpart),"\r\n",2);
                                 // memcpy(linebuf+strlen(line),"\n",1);
                                 // memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
                                 if(strlen(post_buffer)>strlen(line))
-                                    memcpy(linebuf+strlen(line)+2+strlen(addpart),post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
+                                    //memcpy(linebuf+strlen(line)+2+strlen(addpart),post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
+                                    memcpy(linebuf+strlen(line)+strlen(addpart)+2,post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
                                 redsocks_log_error(client, LOG_DEBUG,"linebuf=%s", linebuf);
                             }
                             // if (at_get_words('\n',post_buffer,line1,1 ) != 0)
