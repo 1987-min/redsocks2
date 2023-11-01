@@ -342,14 +342,14 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 		redsocks_drop_client(client);
 		return;
 	}
-    static int linebuf_len = 32 * 1024;
-	char *linebuf = calloc(linebuf_len, 1);
-    redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
-	if (!linebuf) {
-		redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
-		redsocks_drop_client(client);
-		return;
-	}
+    // static int linebuf_len = 32 * 1024;
+	// char *linebuf = calloc(linebuf_len, 1);
+    // redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
+	// if (!linebuf) {
+	// 	redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
+	// 	redsocks_drop_client(client);
+	// 	return;
+	// }
 
     // size_t input_size = evbuffer_get_length(bufferevent_get_input(from));
     // log_error(LOG_DEBUG,"read fromevbuffer input_size2:%zu",input_size);
@@ -395,18 +395,18 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 //         break;
 //     }
 
-    for(;;){
+    // for(;;){
     
-        line = NULL;
-        line = evbuffer_readln(bufferevent_get_output(from), NULL, EVBUFFER_EOL_CRLF);
-        log_error(LOG_DEBUG,"outbefore print toline");
+    //     line = NULL;
+    //     line = evbuffer_readln(bufferevent_get_output(from), NULL, EVBUFFER_EOL_CRLF);
+    //     log_error(LOG_DEBUG,"outbefore print toline");
       
-        if (line == NULL) break;
-        log_error(LOG_DEBUG,"outtobreak1");
-        if (strlen(line)<=0) break;
-        log_error(LOG_DEBUG,"redsocks_relay_readcb outfrombufferLine:%s",line);
-        log_error(LOG_DEBUG,"redsocks_relay_readcb outfromstrlen line=%d",strlen(line));
-    }
+    //     if (line == NULL) break;
+    //     log_error(LOG_DEBUG,"outtobreak1");
+    //     if (strlen(line)<=0) break;
+    //     log_error(LOG_DEBUG,"redsocks_relay_readcb outfrombufferLine:%s",line);
+    //     log_error(LOG_DEBUG,"redsocks_relay_readcb outfromstrlen line=%d",strlen(line));
+    // }
     for(;;){
     
         line = NULL;
@@ -419,18 +419,18 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         log_error(LOG_DEBUG,"redsocks_relay_readcb tobufferLine:%s",line);
         log_error(LOG_DEBUG,"redsocks_relay_readcb tostrlen line=%d",strlen(line));
     }
-    for(;;){
+    // for(;;){
     
-        line = NULL;
-        line = evbuffer_readln(bufferevent_get_output(to), NULL, EVBUFFER_EOL_CRLF);
-        log_error(LOG_DEBUG,"outbefore print toline");
+    //     line = NULL;
+    //     line = evbuffer_readln(bufferevent_get_output(to), NULL, EVBUFFER_EOL_CRLF);
+    //     log_error(LOG_DEBUG,"outbefore print toline");
       
-        if (line == NULL) break;
-        log_error(LOG_DEBUG,"outtobreak1");
-        if (strlen(line)<=0) break;
-        log_error(LOG_DEBUG,"redsocks_relay_readcb outtobufferLine:%s",line);
-        log_error(LOG_DEBUG,"redsocks_relay_readcb outtostrlen line=%d",strlen(line));
-    }
+    //     if (line == NULL) break;
+    //     log_error(LOG_DEBUG,"outtobreak1");
+    //     if (strlen(line)<=0) break;
+    //     log_error(LOG_DEBUG,"redsocks_relay_readcb outtobufferLine:%s",line);
+    //     log_error(LOG_DEBUG,"redsocks_relay_readcb outtostrlen line=%d",strlen(line));
+    // }
     // usleep(2);
    // free(line);
     end=clock();
@@ -527,7 +527,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     //         redsocks_log_errno(client, LOG_ERR, "bufferevent_disable");
     // }
      free(post_buffer);
-      free(linebuf);
+    //   free(linebuf);
       free(line);
     //   free(line1);
 }
@@ -579,6 +579,14 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
 	char *linebuf = calloc(linebuf_len, 1);
     redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
 	if (!linebuf) {
+		redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
+    static int tobuf_len = 32 * 1024;
+	char *tobuf = calloc(tobuf_len, 1);
+    redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",tobuf);
+	if (!tobuf) {
 		redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
 		redsocks_drop_client(client);
 		return;
@@ -646,44 +654,48 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     
 //     len=0;
 //     j=0;
-    for(;;){
+    // for(;;){
     
-        line = NULL;
-        line = evbuffer_readln(bufferevent_get_output(from), NULL, EVBUFFER_EOL_CRLF);
-        log_error(LOG_DEBUG,"outbefore print toline");
+    //     line = NULL;
+    //     line = evbuffer_readln(bufferevent_get_output(from), NULL, EVBUFFER_EOL_CRLF);
+    //     log_error(LOG_DEBUG,"outbefore print toline");
       
-        if (line == NULL) break;
-        log_error(LOG_DEBUG,"outtobreak1");
-        if (strlen(line)<=0) break;
-        log_error(LOG_DEBUG,"redsocks_relay_writecb outfrombufferLine:%s",line);
-        log_error(LOG_DEBUG,"redsocks_relay_writecb outfromstrlen line=%d",strlen(line));
-    }
+    //     if (line == NULL) break;
+    //     log_error(LOG_DEBUG,"outtobreak1");
+    //     if (strlen(line)<=0) break;
+    //     log_error(LOG_DEBUG,"redsocks_relay_writecb outfrombufferLine:%s",line);
+    //     log_error(LOG_DEBUG,"redsocks_relay_writecb outfromstrlen line=%d",strlen(line));
+    // }
 
-    for(;;){
+    // for(;;){
     
-        line = NULL;
-        line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF);
-        log_error(LOG_DEBUG,"before print toline");
+        // line = NULL;
+        // line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF);
+        // log_error(LOG_DEBUG,"before print toline");
       
-        if (line == NULL) break;
-        log_error(LOG_DEBUG,"tobreak1");
-        if (strlen(line)<=0) break;
-        log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
-        log_error(LOG_DEBUG,"redsocks_relay_writecb tostrlen line=%d",strlen(line));
-    }
+        // if (line == NULL) break;
+        // log_error(LOG_DEBUG,"tobreak1");
+        // if (strlen(line)<=0) break;
+        // log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
+        // log_error(LOG_DEBUG,"redsocks_relay_writecb tostrlen line=%d",strlen(line));
+    // }
+    evbuffer_copyout(bufferevent_get_input(to), tobuf, tobuf_len);
+    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
 
-    for(;;){
+
+
+    // for(;;){
     
-        line = NULL;
-        line = evbuffer_readln(bufferevent_get_output(to), NULL, EVBUFFER_EOL_CRLF);
-        log_error(LOG_DEBUG,"outbefore print toline");
+    //     line = NULL;
+    //     line = evbuffer_readln(bufferevent_get_output(to), NULL, EVBUFFER_EOL_CRLF);
+    //     log_error(LOG_DEBUG,"outbefore print toline");
       
-        if (line == NULL) break;
-        log_error(LOG_DEBUG,"outtobreak1");
-        if (strlen(line)<=0) break;
-        log_error(LOG_DEBUG,"redsocks_relay_writecb outtobufferLine:%s",line);
-        log_error(LOG_DEBUG,"redsocks_relay_writecb outtostrlen line=%d",strlen(line));
-    }
+    //     if (line == NULL) break;
+    //     log_error(LOG_DEBUG,"outtobreak1");
+    //     if (strlen(line)<=0) break;
+    //     log_error(LOG_DEBUG,"redsocks_relay_writecb outtobufferLine:%s",line);
+    //     log_error(LOG_DEBUG,"redsocks_relay_writecb outtostrlen line=%d",strlen(line));
+    // }
    // free(line);
 
         end=clock();
@@ -793,6 +805,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     free(post_buffer);
      free(linebuf);
      free(line);
+     free(tobuf);
     //  free(line1);
 }
 
