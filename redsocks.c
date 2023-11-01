@@ -760,7 +760,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                             redsocks_log_error(client, LOG_DEBUG, "POSTGET");
                             int i =0;
                             for(i=0;i<strlen(post_buffer);i++){
-                                 redsocks_log_error(client, LOG_DEBUG, "post_buffer zhi=%s",post_buffer[i]);
+                                 redsocks_log_error(client, LOG_DEBUG, "post_buffer zhi=%x",post_buffer[i]);
                                  if(post_buffer[i]=='\n') break;
                             }
                             redsocks_log_error(client, LOG_DEBUG, "i=%d",i);
