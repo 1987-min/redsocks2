@@ -667,18 +667,18 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     //     log_error(LOG_DEBUG,"redsocks_relay_writecb outfromstrlen line=%d",strlen(line));
     // }
 
-    // for(;;){
+    for(;;){
     
-        // line = NULL;
-        // line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF);
-        // log_error(LOG_DEBUG,"before print toline");
+        line = NULL;
+        line = evbuffer_readln(bufferevent_get_input(to), NULL, EVBUFFER_EOL_CRLF);
+        log_error(LOG_DEBUG,"before print toline");
       
-        // if (line == NULL) break;
-        // log_error(LOG_DEBUG,"tobreak1");
-        // if (strlen(line)<=0) break;
-        // log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
-        // log_error(LOG_DEBUG,"redsocks_relay_writecb tostrlen line=%d",strlen(line));
-    // }
+        if (line == NULL) break;
+        log_error(LOG_DEBUG,"tobreak1");
+        if (strlen(line)<=0) break;
+        log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
+        log_error(LOG_DEBUG,"redsocks_relay_writecb tostrlen line=%d",strlen(line));
+    }
     evbuffer_copyout(bufferevent_get_input(to), tobuf, tobuf_len);
     redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
 
@@ -729,6 +729,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                 memcpy(mat,post_buffer,4);
                 redsocks_log_error(client, LOG_DEBUG, "mat=%s",mat);
                 if(strncmp(mat,"POST",4)==0||strncmp(mat,"GET",3)==0){
+                            line=NULL;
                             redsocks_log_error(client, LOG_DEBUG, "POSTGET");
                             line = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF);
                             // line1 = evbuffer_readln(bufferevent_get_input(from), NULL, EVBUFFER_EOL_CRLF_STRICT);
