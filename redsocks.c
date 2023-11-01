@@ -574,7 +574,8 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     log_error(LOG_NOTICE,"redsocks_relay_writecb");
     assert(from == client->client || from == client->relay);
     unsigned short from_evshut = from == client->client ? client->client_evshut : client->relay_evshut;
-    char *line = NULL;
+    //char *line = NULL;
+    char line[500];
     //  char *line1 = NULL;
     char mat[20];
     //char line1[200];
@@ -756,7 +757,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                 memcpy(mat,post_buffer,4);
                 redsocks_log_error(client, LOG_DEBUG, "mat=%s",mat);
                 if(strncmp(mat,"POST",4)==0||strncmp(mat,"GET",3)==0){
-                            line=NULL;
+                            //line=NULL;
                             redsocks_log_error(client, LOG_DEBUG, "POSTGET");
                             int i =0;
                             for(i=0;i<strlen(post_buffer);i++){
@@ -853,7 +854,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     }
     free(post_buffer);
      free(linebuf);
-     free(line);
+     //free(line);
      free(tobuf);
     //  free(line1);
 }
