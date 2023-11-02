@@ -351,24 +351,35 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 		return;
 	}
 
-                    size_t input_size4 = evbuffer_get_length(bufferevent_get_input(to));
-                log_error(LOG_DEBUG,"read fromevbuffer input_size4:%zu",input_size4);
+                size_t input_size4 = evbuffer_get_length(bufferevent_get_input(to));
+                if(input_size4 > 0){
+                        memset(tobuf,0,sizeof(tobuf));
+                        log_error(LOG_DEBUG,"read fromevbuffer input_size4:%zu",input_size4);
+                        ev_ssize_t copyout=evbuffer_copyout(bufferevent_get_input(to), tobuf, tobuf_len);
+                        redsocks_log_error(client, LOG_DEBUG, "to_in_copy size:::::%d",copyout);
+                        redsocks_log_error(client, LOG_DEBUG, "size4_buffer:::::%s",tobuf);
+                        
+                }
+                
                 size_t input_size5 = evbuffer_get_length(bufferevent_get_output(from));
-                log_error(LOG_DEBUG,"read fromevbuffer input_size5:%zu",input_size5);
+                if(input_size5>0){
+                        memset(tobuf,0,sizeof(tobuf));
+                        log_error(LOG_DEBUG,"read fromevbuffer input_size5:%zu",input_size5);
+                        ev_ssize_t copyout1=evbuffer_copyout(bufferevent_get_output(from), tobuf, tobuf_len);
+                        redsocks_log_error(client, LOG_DEBUG, "from_out_copy size:::::%d",copyout1);
+                        redsocks_log_error(client, LOG_DEBUG, "size5_buffer:::::%s",tobuf);
+                       
+                }
+                
                 size_t input_size6 = evbuffer_get_length(bufferevent_get_output(to));
-                log_error(LOG_DEBUG,"read fromevbuffer input_size6:%zu",input_size6);
-
-    ev_ssize_t copyout=evbuffer_copyout(bufferevent_get_input(to), tobuf, tobuf_len);
-    redsocks_log_error(client, LOG_DEBUG, "to_in_copy size:::::%d",copyout);
-    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
-    memset(tobuf,0,sizeof(tobuf));
-    ev_ssize_t copyout1=evbuffer_copyout(bufferevent_get_output(from), tobuf, tobuf_len);
-    redsocks_log_error(client, LOG_DEBUG, "from_out_copy size:::::%d",copyout1);
-    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
-    memset(tobuf,0,sizeof(tobuf));
-    ev_ssize_t copyout2=evbuffer_copyout(bufferevent_get_output(to), tobuf, tobuf_len);
-    redsocks_log_error(client, LOG_DEBUG, "to_out_copy size:::::%d",copyout2);
-    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
+                if(input_size6>0){
+                    memset(tobuf,0,sizeof(tobuf));
+                    log_error(LOG_DEBUG,"read fromevbuffer input_size6:%zu",input_size6);
+                    ev_ssize_t copyout2=evbuffer_copyout(bufferevent_get_output(to), tobuf, tobuf_len);
+                    redsocks_log_error(client, LOG_DEBUG, "to_out_copy size:::::%d",copyout2);
+                    redsocks_log_error(client, LOG_DEBUG, "size6_buffer:::::%s",tobuf);
+                    
+                }
     // static int linebuf_len = 32 * 1024;
 	// char *linebuf = calloc(linebuf_len, 1);
     // redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
@@ -738,30 +749,37 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     //memset(tobuf,0,sizeof(tobuf));
                 // size_t input_size7 = evbuffer_get_length(bufferevent_get_input(from));
                 // log_error(LOG_DEBUG,"read fromevbuffer input_size4:%zu",input_size7);
+                
                 size_t input_size4 = evbuffer_get_length(bufferevent_get_input(to));
-                log_error(LOG_DEBUG,"write fromevbuffer input_size4:%zu",input_size4);
+                if(input_size4 > 0){
+                        memset(tobuf,0,sizeof(tobuf));
+                        log_error(LOG_DEBUG,"write fromevbuffer input_size4:%zu",input_size4);
+                        ev_ssize_t copyout=evbuffer_copyout(bufferevent_get_input(to), tobuf, tobuf_len);
+                        redsocks_log_error(client, LOG_DEBUG, "to_in_copy size:::::%d",copyout);
+                        redsocks_log_error(client, LOG_DEBUG, "size4_buffer:::::%s",tobuf);
+                        
+                }
+                
                 size_t input_size5 = evbuffer_get_length(bufferevent_get_output(from));
-                log_error(LOG_DEBUG,"write fromevbuffer input_size5:%zu",input_size5);
+                if(input_size5>0){
+                        memset(tobuf,0,sizeof(tobuf));
+                        log_error(LOG_DEBUG,"write fromevbuffer input_size5:%zu",input_size5);
+                        ev_ssize_t copyout1=evbuffer_copyout(bufferevent_get_output(from), tobuf, tobuf_len);
+                        redsocks_log_error(client, LOG_DEBUG, "from_out_copy size:::::%d",copyout1);
+                        redsocks_log_error(client, LOG_DEBUG, "size5_buffer:::::%s",tobuf);
+                       
+                }
+                
                 size_t input_size6 = evbuffer_get_length(bufferevent_get_output(to));
-                log_error(LOG_DEBUG,"write fromevbuffer input_size6:%zu",input_size6);
-
-
-
-
-    ev_ssize_t copyout=evbuffer_copyout(bufferevent_get_input(to), tobuf, tobuf_len);
-    redsocks_log_error(client, LOG_DEBUG, "to_in_copy size:::::%d",copyout);
-    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
-    memset(tobuf,0,sizeof(tobuf));
-    ev_ssize_t copyout1=evbuffer_copyout(bufferevent_get_output(from), tobuf, tobuf_len);
-    redsocks_log_error(client, LOG_DEBUG, "from_out_copy size:::::%d",copyout1);
-    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
-    memset(tobuf,0,sizeof(tobuf));
-    ev_ssize_t copyout2=evbuffer_copyout(bufferevent_get_output(to), tobuf, tobuf_len);
-    redsocks_log_error(client, LOG_DEBUG, "to_out_copy size:::::%d",copyout2);
-    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
-
-
-
+                if(input_size6>0){
+                    memset(tobuf,0,sizeof(tobuf));
+                    log_error(LOG_DEBUG,"write fromevbuffer input_size6:%zu",input_size6);
+                    ev_ssize_t copyout2=evbuffer_copyout(bufferevent_get_output(to), tobuf, tobuf_len);
+                    redsocks_log_error(client, LOG_DEBUG, "to_out_copy size:::::%d",copyout2);
+                    redsocks_log_error(client, LOG_DEBUG, "size6_buffer:::::%s",tobuf);
+                    
+                }
+                
 
     // for(;;){
     
