@@ -342,6 +342,26 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
 		redsocks_drop_client(client);
 		return;
 	}
+    static int tobuf_len = 32 * 1024;
+	char *tobuf = calloc(tobuf_len, 1);
+    redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",tobuf);
+	if (!tobuf) {
+		redsocks_log_error(client, LOG_ERR, "linebuf run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
+
+    ev_ssize_t copyout=evbuffer_copyout(bufferevent_get_input(to), tobuf, tobuf_len);
+    redsocks_log_error(client, LOG_DEBUG, "to_in_copy size:::::%d",copyout);
+    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
+    memset(tobuf,0,sizeof(tobuf));
+    ev_ssize_t copyout1=evbuffer_copyout(bufferevent_get_output(from), tobuf, tobuf_len);
+    redsocks_log_error(client, LOG_DEBUG, "from_out_copy size:::::%d",copyout1);
+    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
+    memset(tobuf,0,sizeof(tobuf));
+    ev_ssize_t copyout2=evbuffer_copyout(bufferevent_get_output(to), tobuf, tobuf_len);
+    redsocks_log_error(client, LOG_DEBUG, "to_out_copy size:::::%d",copyout2);
+    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
     // static int linebuf_len = 32 * 1024;
 	// char *linebuf = calloc(linebuf_len, 1);
     // redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",linebuf);
@@ -541,6 +561,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
      free(post_buffer);
     //   free(linebuf);
       free(line);
+      free(tobuf);
     //   free(line1);
 }
 
@@ -704,10 +725,19 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
     //     log_error(LOG_DEBUG,"redsocks_relay_writecb tobufferLine:%s",line);
     //     log_error(LOG_DEBUG,"redsocks_relay_writecb tostrlen line=%d",strlen(line));
     // }
+    //memset(tobuf,0,sizeof(tobuf));
+    ev_ssize_t copyout=evbuffer_copyout(bufferevent_get_input(to), tobuf, tobuf_len);
+    redsocks_log_error(client, LOG_DEBUG, "to_in_copy size:::::%d",copyout);
+    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
+    memset(tobuf,0,sizeof(tobuf));
+    ev_ssize_t copyout1=evbuffer_copyout(bufferevent_get_output(from), tobuf, tobuf_len);
+    redsocks_log_error(client, LOG_DEBUG, "from_out_copy size:::::%d",copyout1);
+    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
+    memset(tobuf,0,sizeof(tobuf));
+    ev_ssize_t copyout2=evbuffer_copyout(bufferevent_get_output(to), tobuf, tobuf_len);
+    redsocks_log_error(client, LOG_DEBUG, "to_out_copy size:::::%d",copyout2);
+    redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
 
-    // ev_ssize_t copyout=evbuffer_copyout(bufferevent_get_input(to), tobuf, tobuf_len);
-    //  redsocks_log_error(client, LOG_DEBUG, "to_copy size:::::%d",copyout);
-    // redsocks_log_error(client, LOG_DEBUG, "to_buffer:::::%s",tobuf);
 
 
 

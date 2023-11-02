@@ -250,14 +250,14 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 	}
 
 	free(auth_string);
-	redsocks_log_error(client, LOG_DEBUG,"BEFOREEEEE");
+	// redsocks_log_error(client, LOG_DEBUG,"BEFOREEEEE");
 
 //	char clientip[RED_INET_ADDRSTRLEN];
-	redsocks_log_error(client, LOG_DEBUG,"BEF1");
+	// redsocks_log_error(client, LOG_DEBUG,"BEF1");
 //	const struct sockaddr_in * addr1 = (const struct sockaddr_in *) &client->clientaddr;
-	redsocks_log_error(client, LOG_DEBUG,"BEF2");
+	// redsocks_log_error(client, LOG_DEBUG,"BEF2");
 	//red_inet_ntop(addr1->sin_addr.s_addr, clientip, sizeof(clientip));
-	redsocks_log_error(client, LOG_DEBUG,"BEF3");
+	// redsocks_log_error(client, LOG_DEBUG,"BEF3");
 	//const char *ip = inet_ntop(AF_INET, addr1->sin_addr.s_addr, clientip, sizeof(clientip));
 	//const char *ip = inet_ntop(client->clientaddr.sin_family, &client->clientaddr.sin_addr, clientip, sizeof(clientip));
 //	redsocks_log_error(client, LOG_DEBUG,"hTTTTTp clientip=%s",clientip);
@@ -271,11 +271,11 @@ struct evbuffer *httpc_mkconnect(redsocks_client *client)
 		redsocks_log_errno(client, LOG_ERR, "evbufer_add_printf");
 		goto fail;
 	}
-	redsocks_log_error(client, LOG_DEBUG,"BEF6");
+	// redsocks_log_error(client, LOG_DEBUG,"BEF6");
 
 	retval = buff;
 	buff = NULL;
-	redsocks_log_error(client, LOG_DEBUG,"BEF7");
+	// redsocks_log_error(client, LOG_DEBUG,"BEF7");
 
 fail:
 	if (buff){
