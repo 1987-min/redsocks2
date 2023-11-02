@@ -839,45 +839,45 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                             }
                             redsocks_log_error(client, LOG_DEBUG, "i=%d",i);
                             redsocks_log_error(client, LOG_DEBUG, "judge=%d",judge);
-                            memset(line,0,sizeof(line));
+                            memset(tobuf,0,sizeof(tobuf));
                             if(judge!=0 && judge == i-1)
-                               memcpy(line,post_buffer,i-1);
+                               memcpy(tobuf,post_buffer,i-1);
                             else
-                               memcpy(line,post_buffer,i);
-                            redsocks_log_error(client, LOG_DEBUG, "first line =%s",line);
+                               memcpy(tobuf,post_buffer,i);
+                            redsocks_log_error(client, LOG_DEBUG, "first line =%s",tobuf);
                             redsocks_log_error(client, LOG_DEBUG, "sss");
-                            if(strlen(line)>0){
+                            if(strlen(tobuf)>0){
                                 if(judge!=0 && judge == i-1){
                                     redsocks_log_error(client, LOG_DEBUG, "rnrnrnrnrnrn");
-                                    memcpy(linebuf,line,strlen(line));
-                                    memcpy(linebuf+strlen(line),"\r\n",2);
-                                    //memcpy(linebuf+strlen(line),"\r\n",2);
-                                    //memcpy(linebuf+strlen(line)+2,addpart,strlen(addpart));
-                                    memcpy(linebuf+strlen(line)+2,addpart,strlen(addpart));
-                                    memcpy(linebuf+strlen(line)+2+strlen(addpart),"\r\n",2);
-                                    // memcpy(linebuf+strlen(line),"\n",1);
-                                    // memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
+                                    memcpy(linebuf,tobuf,strlen(tobuf));
+                                    memcpy(linebuf+strlen(tobuf),"\r\n",2);
+                                    //memcpy(linebuf+strlen(tobuf),"\r\n",2);
+                                    //memcpy(linebuf+strlen(tobuf)+2,addpart,strlen(addpart));
+                                    memcpy(linebuf+strlen(tobuf)+2,addpart,strlen(addpart));
+                                    memcpy(linebuf+strlen(tobuf)+2+strlen(addpart),"\r\n",2);
+                                    // memcpy(linebuf+strlen(tobuf),"\n",1);
+                                    // memcpy(linebuf+strlen(tobuf)+1,addpart,strlen(addpart));
                                     redsocks_log_error(client, LOG_DEBUG, "kkk");
-                                    redsocks_log_error(client, LOG_DEBUG, "strlenlien+2:%d",strlen(line)+2);
-                                    if(strlen(post_buffer)>strlen(line))
-                                    //memcpy(linebuf+strlen(line)+2+strlen(addpart),post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
-                                            memcpy(linebuf+strlen(line)+strlen(addpart)+4,post_buffer+strlen(line)+2,strlen(post_buffer)-strlen(line)-2);
+                                    redsocks_log_error(client, LOG_DEBUG, "strlenlien+2:%d",strlen(tobuf)+2);
+                                    if(strlen(post_buffer)>strlen(tobuf))
+                                    //memcpy(linebuf+strlen(tobuf)+2+strlen(addpart),post_buffer+strlen(tobuf),strlen(post_buffer)-strlen(tobuf));
+                                            memcpy(linebuf+strlen(tobuf)+strlen(addpart)+4,post_buffer+strlen(tobuf)+2,strlen(post_buffer)-strlen(tobuf)-2);
                                     redsocks_log_error(client, LOG_DEBUG,"linebuf=%s", linebuf);
                                 }else{
                                     redsocks_log_error(client, LOG_DEBUG, "nnnnnnn");
-                                    memcpy(linebuf,line,strlen(line));
-                                    memcpy(linebuf+strlen(line),"\n",1);
-                                    //memcpy(linebuf+strlen(line),"\r\n",2);
-                                    //memcpy(linebuf+strlen(line)+2,addpart,strlen(addpart));
-                                    memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
-                                    memcpy(linebuf+strlen(line)+1+strlen(addpart),"\n",1);
-                                    // memcpy(linebuf+strlen(line),"\n",1);
-                                    // memcpy(linebuf+strlen(line)+1,addpart,strlen(addpart));
+                                    memcpy(linebuf,tobuf,strlen(tobuf));
+                                    memcpy(linebuf+strlen(tobuf),"\n",1);
+                                    //memcpy(linebuf+strlen(tobuf),"\r\n",2);
+                                    //memcpy(linebuf+strlen(tobuf)+2,addpart,strlen(addpart));
+                                    memcpy(linebuf+strlen(tobuf)+1,addpart,strlen(addpart));
+                                    memcpy(linebuf+strlen(tobuf)+1+strlen(addpart),"\n",1);
+                                    // memcpy(linebuf+strlen(tobuf),"\n",1);
+                                    // memcpy(linebuf+strlen(tobuf)+1,addpart,strlen(addpart));
                                     redsocks_log_error(client, LOG_DEBUG, "kkk");
-                                    redsocks_log_error(client, LOG_DEBUG, "strlenlien+2:%d",strlen(line)+2);
-                                    if(strlen(post_buffer)>strlen(line))
-                                    //memcpy(linebuf+strlen(line)+2+strlen(addpart),post_buffer+strlen(line),strlen(post_buffer)-strlen(line));
-                                        memcpy(linebuf+strlen(line)+strlen(addpart)+2,post_buffer+strlen(line)+1,strlen(post_buffer)-strlen(line)-1);
+                                    redsocks_log_error(client, LOG_DEBUG, "strlenlien+2:%d",strlen(tobuf)+2);
+                                    if(strlen(post_buffer)>strlen(tobuf))
+                                    //memcpy(linebuf+strlen(tobuf)+2+strlen(addpart),post_buffer+strlen(tobuf),strlen(post_buffer)-strlen(tobuf));
+                                        memcpy(linebuf+strlen(tobuf)+strlen(addpart)+2,post_buffer+strlen(tobuf)+1,strlen(post_buffer)-strlen(tobuf)-1);
                                     redsocks_log_error(client, LOG_DEBUG,"linebuf=%s", linebuf);
                                 }
 
