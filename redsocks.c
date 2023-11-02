@@ -749,15 +749,8 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
         // }
         // else
         // {
-             size_t input_size1 = evbuffer_get_length(bufferevent_get_input(from));
-                log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size1);
-            if((bufferevent_read(bufferevent_get_input(from), post_buffer, post_buffer_len))<0)
-                redsocks_log_errno(client, LOG_ERR, "bufferevent_read fail ");
-            size_t input_size3 = evbuffer_get_length(bufferevent_get_input(from));
-            log_error(LOG_DEBUG,"read fromevbuffer input_size3:%zu",input_size3);
-
-
-             //evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
+          if(evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len)==-1)
+            redsocks_log_errno(client, LOG_ERR, "copy fail");
             // redsocks_log_error(client, LOG_DEBUG, "from_copy size:::::%d",copyfrom);
             redsocks_log_error(client, LOG_DEBUG, "post_buffer:::::%s",post_buffer);
           if(strlen(post_buffer)>4){
@@ -845,23 +838,27 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                 // log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size1);
                 // redsocks_log_errno(client, LOG_DEBUG, "before write");
                 if(bufferevent_write(to,linebuf,strlen(linebuf))==-1)
-                    redsocks_log_errno(client, LOG_ERR, "linebuf bufferevent_write_buffer");
+                    redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
+                size_t input_size1 = evbuffer_get_length(bufferevent_get_input(from));
+                log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size1);
+                if(evbuffer_drain(bufferevent_get_input(from),input_size1)==-1)
+                    redsocks_log_errno(client, LOG_ERR, "remove fail");
+                size_t input_size3 = evbuffer_get_length(bufferevent_get_input(from));
+                log_error(LOG_DEBUG,"read fromevbuffer input_size3:%zu",input_size3);
 
                 // redsocks_log_errno(client, LOG_DEBUG, "after write");
                 // size_t input_size3 = evbuffer_get_length(bufferevent_get_output(to));
                 // log_error(LOG_DEBUG,"read fromevbuffer input_size3:%zu",input_size3);
             }else{
-                if(bufferevent_write(to,post_buffer,strlen(post_buffer))==-1)
-                    redsocks_log_errno(client, LOG_ERR, "post_buffer bufferevent_write_buffer");
-            }
-             /*   size_t input_size1 = evbuffer_get_length(bufferevent_get_input(from));
-                log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size1);
+            
+                // size_t input_size1 = evbuffer_get_length(bufferevent_get_input(from));
+                // log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size1);
                 // redsocks_log_errno(client, LOG_DEBUG, "choose from");
                 if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1)
                     redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
-                size_t input_size3 = evbuffer_get_length(bufferevent_get_input(from));
-                log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size3);*/
-            // }
+                // size_t input_size3 = evbuffer_get_length(bufferevent_get_input(from));
+                // log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size3);
+            }
         //  }
 
         if (!(from_evshut & EV_READ) && bufferevent_enable(from, EV_READ) == -1);
