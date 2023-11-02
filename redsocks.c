@@ -832,19 +832,23 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                 
                 // }   
             }
-            if(strlen(linebuf)>0){
-                size_t input_size1 = evbuffer_get_length(bufferevent_get_output(to));
+            // if(strlen(linebuf)>0){
+            //     size_t input_size1 = evbuffer_get_length(bufferevent_get_output(to));
+            //     log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size1);
+            //     // redsocks_log_errno(client, LOG_DEBUG, "before write");
+            //     bufferevent_write(to,linebuf,strlen(linebuf));
+            //     // redsocks_log_errno(client, LOG_DEBUG, "after write");
+            //     size_t input_size3 = evbuffer_get_length(bufferevent_get_output(to));
+            //     log_error(LOG_DEBUG,"read fromevbuffer input_size3:%zu",input_size3);
+            // }else{
+                size_t input_size1 = evbuffer_get_length(bufferevent_get_input(from));
                 log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size1);
-                // redsocks_log_errno(client, LOG_DEBUG, "before write");
-                bufferevent_write(to,linebuf,strlen(linebuf));
-                // redsocks_log_errno(client, LOG_DEBUG, "after write");
-                size_t input_size3 = evbuffer_get_length(bufferevent_get_output(to));
-                log_error(LOG_DEBUG,"read fromevbuffer input_size3:%zu",input_size3);
-            }else{
-                redsocks_log_errno(client, LOG_DEBUG, "choose from");
-                if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1);
-                redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
-            }
+                // redsocks_log_errno(client, LOG_DEBUG, "choose from");
+                if (bufferevent_write_buffer(to, bufferevent_get_input(from)) == -1)
+                    redsocks_log_errno(client, LOG_ERR, "bufferevent_write_buffer");
+                size_t input_size3 = evbuffer_get_length(bufferevent_get_input(from));
+                log_error(LOG_DEBUG,"read fromevbuffer input_size1:%zu",input_size3);
+            // }
         //  }
 
         if (!(from_evshut & EV_READ) && bufferevent_enable(from, EV_READ) == -1);
