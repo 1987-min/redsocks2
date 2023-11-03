@@ -646,7 +646,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
     }
     else {
         redsocks_log_errno(client, LOG_DEBUG, "r<<<< else");
-        if (bufferevent_disable(from, EV_READ) == -1)
+        if (bufferevent_disable(from, EV_READ) == -1)//to写多了把from读关了
             redsocks_log_errno(client, LOG_ERR, "bufferevent_disable");
     }
     // if (evbuffer_get_length(bufferevent_get_output(to)) < get_write_hwm(to)) {

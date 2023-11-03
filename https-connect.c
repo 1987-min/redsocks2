@@ -67,6 +67,7 @@ typedef struct httpsc_instance_t {
 
 static void log_ssl_error(redsocks_client *client, struct bufferevent * buffev)
 {
+    redsocks_log_error(client, LOG_DEBUG, "log_ssl_error");
     unsigned long err;
     while ((err = (bufferevent_get_openssl_error(buffev)))) {
         const char *msg = (const char*)
@@ -81,11 +82,13 @@ static void log_ssl_error(redsocks_client *client, struct bufferevent * buffev)
 
 static void httpsc_client_init(redsocks_client *client)
 {
+    redsocks_log_error(client, LOG_DEBUG, "httpsc_client_init");
     client->state = httpc_new;
 }
 
 static void httpsc_client_fini(redsocks_client *client)
 {
+    redsocks_log_error(client, LOG_DEBUG, "httpsc_client_fini");
     httpsc_client *sclient = (void*)(client + 1);
     struct bufferevent * underlying = NULL;
 
@@ -104,6 +107,7 @@ static void httpsc_client_fini(redsocks_client *client)
 
 static int httpsc_instance_init(struct redsocks_instance_t *instance)
 {
+    log_error(LOG_DEBUG, "httpsc_instance_init");
     httpsc_instance * httpsc = (httpsc_instance *)(instance + 1);
     SSL_CTX * ctx = NULL;
 
@@ -124,6 +128,7 @@ static int httpsc_instance_init(struct redsocks_instance_t *instance)
 
 static void httpsc_instance_fini(redsocks_instance *instance)
 {
+    log_error(LOG_DEBUG, "httpsc_instance_fini");
     httpsc_instance * httpsc = (httpsc_instance *)(instance + 1);
 
     free(httpsc->auth.last_auth_query);
@@ -139,6 +144,7 @@ extern void httpc_read_cb(struct bufferevent *buffev, void *_arg);
 
 static void httpsc_event_cb(struct bufferevent *buffev, short what, void *_arg)
 {
+    log_error(LOG_DEBUG, "httpsc_event_cb");
     redsocks_client *client = _arg;
     assert(buffev == client->relay || buffev == client->client);
 
@@ -194,6 +200,7 @@ static void httpsc_event_cb(struct bufferevent *buffev, short what, void *_arg)
 
 static void httpsc_read_cb(struct bufferevent *buffev, void *_arg)
 {
+    log_error(LOG_DEBUG, "httpsc_read_cb");
     redsocks_client *client = _arg;
 
     httpc_read_cb(buffev, _arg);
@@ -215,6 +222,7 @@ static void httpsc_read_cb(struct bufferevent *buffev, void *_arg)
 
 static void httpsc_write_cb(struct bufferevent *buffev, void *_arg)
 {
+    log_error(LOG_DEBUG, "httpsc_write_cb");
     redsocks_client *client = _arg;
     struct bufferevent * from = client->client;
     struct bufferevent * to = client->relay;
@@ -224,6 +232,7 @@ static void httpsc_write_cb(struct bufferevent *buffev, void *_arg)
 
 static int httpsc_connect_relay(redsocks_client *client)
 {
+    log_error(LOG_DEBUG, "httpsc_connect_relay");
     httpsc_client *sclient = (void*)(client + 1);
     httpsc_instance *httpsc = (httpsc_instance *)(client->instance + 1);
     char * interface = client->instance->config.interface;
