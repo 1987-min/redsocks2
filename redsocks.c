@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <time.h>
 #include <errno.h>
 #include <assert.h>
@@ -518,6 +519,21 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
         // }else{
             evbuffer_copyout(bufferevent_get_input(from), post_buffer, post_buffer_len);
             redsocks_log_error(client, LOG_DEBUG, "read post_buffer:::::%s",post_buffer);
+
+
+            time_t timer0;
+	        timer0= time(NULL);
+            redsocks_log_error(client, LOG_DEBUG, "%lld\n", timer0);
+	       // printf("%lld\n", timer0);
+	        struct tm* plocaltime = localtime(&timer0);
+            dsocks_log_error(client, LOG_DEBUG, "\n%d-%d-%d", plocaltime->tm_year + 1900, plocaltime->tm_mon + 1, plocaltime->tm_mday);
+	        //printf("\n%d-%d-%d", plocaltime->tm_year + 1900, plocaltime->tm_mon + 1, plocaltime->tm_mday);
+            dsocks_log_error(client, LOG_DEBUG, " %d:%d:%d\n",plocaltime->tm_hour,plocaltime->tm_min,plocaltime->tm_sec);
+	        //printf(" %d:%d:%d\n",plocaltime->tm_hour,plocaltime->tm_min,plocaltime->tm_sec);
+
+
+
+
            if(strlen(post_buffer)>4){
                 redsocks_log_error(client, LOG_DEBUG, "post_buffer_len=%d",strlen(post_buffer));
                 memcpy(mat,post_buffer,4);

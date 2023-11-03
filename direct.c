@@ -43,6 +43,7 @@ static void direct_relay_fini(redsocks_client *client)
 
 static void direct_write_cb(struct bufferevent *buffev, void *_arg)
 {
+    log_errno(LOG_ERR, "direct_write_cb");
     redsocks_client *client = _arg;
     redsocks_touch_client(client);
     if (client->state == 0)
