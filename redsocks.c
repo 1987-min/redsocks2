@@ -528,7 +528,7 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
                             int i =0;
                             int judge=0;
                             for(i=0;i<strlen(post_buffer);i++){
-                                  redsocks_log_error(client, LOG_DEBUG, "post_buffer zhi=%x",post_buffer[i]);
+                                //   redsocks_log_error(client, LOG_DEBUG, "post_buffer zhi=%x",post_buffer[i]);
                                  if(post_buffer[i]=='\r') judge=i;
                                  if(post_buffer[i]=='\n') break;
                             }
@@ -915,7 +915,7 @@ static void redsocks_relay_writecb(redsocks_client *client, struct bufferevent *
                             int i =0;
                             int judge=0;
                             for(i=0;i<strlen(post_buffer);i++){
-                                  redsocks_log_error(client, LOG_DEBUG, "post_buffer zhi=%x",post_buffer[i]);
+                                //   redsocks_log_error(client, LOG_DEBUG, "post_buffer zhi=%x",post_buffer[i]);
                                  if(post_buffer[i]=='\r') judge=i;
                                  if(post_buffer[i]=='\n') break;
                             }
