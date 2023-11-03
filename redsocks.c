@@ -526,9 +526,9 @@ static void redsocks_relay_readcb(redsocks_client *client, struct bufferevent *f
             redsocks_log_error(client, LOG_DEBUG, "%lld\n", timer0);
 	       // printf("%lld\n", timer0);
 	        struct tm* plocaltime = localtime(&timer0);
-            dsocks_log_error(client, LOG_DEBUG, "\n%d-%d-%d", plocaltime->tm_year + 1900, plocaltime->tm_mon + 1, plocaltime->tm_mday);
+            redsocks_log_error(client, LOG_DEBUG, "\n%d-%d-%d", plocaltime->tm_year + 1900, plocaltime->tm_mon + 1, plocaltime->tm_mday);
 	        //printf("\n%d-%d-%d", plocaltime->tm_year + 1900, plocaltime->tm_mon + 1, plocaltime->tm_mday);
-            dsocks_log_error(client, LOG_DEBUG, " %d:%d:%d\n",plocaltime->tm_hour,plocaltime->tm_min,plocaltime->tm_sec);
+            redsocks_log_error(client, LOG_DEBUG, " %d:%d:%d\n",plocaltime->tm_hour,plocaltime->tm_min,plocaltime->tm_sec);
 	        //printf(" %d:%d:%d\n",plocaltime->tm_hour,plocaltime->tm_min,plocaltime->tm_sec);
 
 
