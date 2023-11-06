@@ -23,6 +23,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <utils.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>

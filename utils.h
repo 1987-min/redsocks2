@@ -80,6 +80,11 @@ struct bufferevent* red_connect_relay_ssl(const char *ifname,
                                 bufferevent_event_cb errorcb,
                                 void *cbarg,
                                 const struct timeval *timeout_write);
+struct bufferevent* bufferevent_openssl_filter_new(struct event_base *base,
+    struct bufferevent *underlying,
+    SSL *ssl,
+    enum bufferevent_ssl_state state,
+    int options);
 #endif
 struct bufferevent* red_connect_relay_tfo(const char *ifname,
                                 struct sockaddr_storage *addr,
