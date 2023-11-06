@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-
+#define ENABLE_HTTPS_PROXY
 #include <sys/time.h>
 #include <sys/types.h>
 #include <stdlib.h>

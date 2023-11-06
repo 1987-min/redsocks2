@@ -1,5 +1,6 @@
 #ifndef UTILS_H_SAT_FEB__2_02_24_05_2008
 #define UTILS_H_SAT_FEB__2_02_24_05_2008
+#define ENABLE_HTTPS_PROXY
 
 #include <stddef.h>
 #include <time.h>
