@@ -406,6 +406,7 @@ static void socks5_read_cb(struct bufferevent *buffev, void *_arg)
 		//memcpy(&req, addr1->sin_addr.s_addr, strlen(addr1->sin_addr.s_addr));
 		//memcpy(&req, addr1->sin_addr.s_addr, 10);
 		//mkevbuffer("",10);
+		//SSSSSSSS
 
 		redsocks_start_relay(client);
 	}
