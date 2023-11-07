@@ -37,24 +37,25 @@ endif
 
 
 #LDFLAGS += -fwhole-program
-ifdef USE_CRYPTO_POLARSSL
-override LIBS += -lpolarssl
-override CFLAGS += -DUSE_CRYPTO_POLARSSL
-$(info Compile with PolarSSL.)
-CRYPTO := PolarSSL
-else
+#ifdef USE_CRYPTO_POLARSSL
+#override LIBS += -lpolarssl
+#override CFLAGS += -DUSE_CRYPTO_POLARSSL
+#$(info Compile with PolarSSL.)
+#CRYPTO := PolarSSL
+#else
 $(info Compile with OpenSSL by default. To compile with PolarSSL, run 'make USE_CRYPTO_POLARSSL=true' instead.)
 CRYPTO := OpenSSL
-ifdef ENABLE_HTTPS_PROXY
+#ifdef ENABLE_HTTPS_PROXY
 override OBJS += https-connect.o
 override LIBS += -levent_openssl
 override CFLAGS += -DENABLE_HTTPS_PROXY
 override FEATURES += ENABLE_HTTPS_PROXY
 $(info Compile with HTTPS proxy enabled.)
-endif
+#endif
 override LIBS += -lssl -lcrypto -ldl
 override CFLAGS += -DUSE_CRYPTO_OPENSSL
-endif
+#endif
+
 ifdef ENABLE_STATIC
 override LIBS += -lz
 override LDFLAGS += -Wl,-static -static -static-libgcc -s
