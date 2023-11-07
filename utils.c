@@ -33,6 +33,14 @@
 #include "libc-compat.h"
 
 
+
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/rand.h>
+
+#include <event2/bufferevent_ssl.h>
+
+
 #define addr_size(addr) (((struct sockaddr *)addr)->sa_family == AF_INET ? sizeof(struct sockaddr_in): \
                          ((struct sockaddr *)addr)->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6): sizeof(struct sockaddr_storage))
 
