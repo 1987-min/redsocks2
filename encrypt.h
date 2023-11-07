@@ -41,6 +41,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#define USE_CRYPTO_POLARSSL
 
 #if defined(USE_CRYPTO_OPENSSL)
 
