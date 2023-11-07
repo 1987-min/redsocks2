@@ -23,7 +23,6 @@
 #include <time.h>
 #include <ctype.h>
 #include <unistd.h>
-#include <utils.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -35,6 +34,7 @@
 #include "log.h"
 #include "redsocks.h"
 #include "http-auth.h"
+#include "utils.h"
 
 #if LIBEVENT_VERSION_NUMBER >= 0x02010100
 #  ifndef EVENT__HAVE_OPENSSL
