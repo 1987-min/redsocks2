@@ -146,6 +146,7 @@ extern void httpc_read_cb(struct bufferevent *buffev, void *_arg);
 static void httpsc_event_cb(struct bufferevent *buffev, short what, void *_arg)
 {
     log_error(LOG_DEBUG, "httpsc_event_cb");
+    
     redsocks_client *client = _arg;
     assert(buffev == client->relay || buffev == client->client);
 
