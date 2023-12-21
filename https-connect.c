@@ -94,13 +94,16 @@ static void httpsc_client_fini(redsocks_client *client)
     struct bufferevent * underlying = NULL;
 
     if (client->relay) {
+        log_error(LOG_DEBUG, "bufferevent_get_underlying");
         underlying = bufferevent_get_underlying(client->relay);
         if (underlying) {
+            log_error(LOG_DEBUG, "bufferevent_get_underlying bufferevent_free");
             bufferevent_free(client->relay);
             client->relay = underlying;
         }
     }
     if (sclient->ssl) {
+        log_error(LOG_DEBUG, "SSL_free");
         SSL_free(sclient->ssl);
         sclient->ssl = NULL;
     }
@@ -113,8 +116,10 @@ static int httpsc_instance_init(struct redsocks_instance_t *instance)
     SSL_CTX * ctx = NULL;
 
     #if (OPENSSL_VERSION_NUMBER < 0x10100000L)
+        log_error(LOG_DEBUG, "SSL");
         ctx = SSL_CTX_new(SSLv23_client_method());
     #else
+        log_error(LOG_DEBUG, "TLS");
         ctx = SSL_CTX_new(TLS_client_method());
     #endif
     if (!ctx)
@@ -135,6 +140,7 @@ static void httpsc_instance_fini(redsocks_instance *instance)
     free(httpsc->auth.last_auth_query);
     httpsc->auth.last_auth_query = NULL;
     if (httpsc->ctx) {
+        log_error(LOG_DEBUG, "SSL_CTX_free");
         SSL_CTX_free (httpsc->ctx);
         httpsc->ctx = NULL;
     }
@@ -165,16 +171,19 @@ static void httpsc_event_cb(struct bufferevent *buffev, short what, void *_arg)
                             event_fmt(what));
 
     if (what == (BEV_EVENT_READING|BEV_EVENT_EOF)) {
+         redsocks_log_errno(client, LOG_DEBUG, "BEV_EVENT_READING|BEV_EVENT_EOF");
         redsocks_shutdown(client, buffev, SHUT_RD, 1);
         // Ensure the other party could send remaining data and SHUT_WR also
         if (buffev == client->client)
         {
+            redsocks_log_errno(client, LOG_DEBUG, "httpsc_event_cb buffev == client->client");
             if (!(client->relay_evshut & EV_WRITE) && client->relay_connected)
                 // when we got EOF from client, we need to shutdown relay's write
                 process_shutdown_on_write_(client, client->client, client->relay);
         }
         else
         {
+            redsocks_log_errno(client, LOG_DEBUG, "httpsc_event_cb buffev == client->relay");
 #if LIBEVENT_VERSION_NUMBER >= 0x02010100
             if (bufferevent_openssl_get_allow_dirty_shutdown(client->relay))
 #endif
@@ -184,18 +193,21 @@ static void httpsc_event_cb(struct bufferevent *buffev, short what, void *_arg)
         }
     }
     else if (what == BEV_EVENT_CONNECTED) {
+        redsocks_log_errno(client, LOG_DEBUG, "BEV_EVENT_CONNECTED");
         // usually this event is not generated as 'connect' is used to
         // setup connection. For openssl socket, this event is generated.
         client->relay_connected = 1;
         /* We do not need to detect timeouts any more.
            The two peers will handle it. */
         bufferevent_set_timeouts(client->relay, NULL, NULL);
+        redsocks_log_errno(client, LOG_DEBUG, "httpsc_event_cb to httpc_mkconnect");
         redsocks_write_helper_ex(
                 buffev, client,
                 httpc_mkconnect, httpc_request_sent, 0, HTTP_HEAD_WM_HIGH
                 );
     }
     else {
+        redsocks_log_errno(client, LOG_DEBUG, "httpsssredsocks_drop_client");
         redsocks_drop_client(client);
     }
 }
@@ -203,14 +215,36 @@ static void httpsc_event_cb(struct bufferevent *buffev, short what, void *_arg)
 static void httpsc_read_cb(struct bufferevent *buffev, void *_arg)
 {
     log_error(LOG_DEBUG, "httpsc_read_cb");
+    static int tobuf_len = 32 * 1024;
+	char *tobuf = calloc(tobuf_len, 1);
+    redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",tobuf);
+	if (!tobuf) {
+		redsocks_log_error(client, LOG_ERR, "tobuf run out of memory");
+		redsocks_drop_client(client);
+		return;
+	}
+
     redsocks_client *client = _arg;
 
     httpc_read_cb(buffev, _arg);
 
     if (client->state == httpc_headers_skipped) {
+        log_error(LOG_DEBUG, "httpsc_read_cb httpc_headers_skipped");
         bufferevent_data_cb read_cb, write_cb;
 
         replace_eventcb(client->client, httpsc_event_cb);
+
+        size_t input_size = evbuffer_get_length(bufferevent_get_input(client->client));
+        log_error(LOG_DEBUG,"read clientevbuffer input_size:%zu",input_size);
+        if(input_size > 0){
+            memset(tobuf,0,sizeof(tobuf));
+            
+            ev_ssize_t copyout=evbuffer_copyout(bufferevent_get_input(client->client), tobuf, tobuf_len);
+            redsocks_log_error(client, LOG_DEBUG, "client->client_in_copy size:::::%d",copyout);
+            redsocks_log_error(client, LOG_DEBUG, "size_buffer:::::%s",tobuf);
+                        
+        }
+
         struct evbuffer * input = bufferevent_get_input(client->client);
         if (evbuffer_get_length(input))
 #if LIBEVENT_VERSION_NUMBER >= 0x02010100
@@ -244,13 +278,14 @@ static int httpsc_connect_relay(redsocks_client *client)
         sclient->ssl = SSL_new(httpsc->ctx);
 
     // Allowing binding relay socket to specified IP for outgoing connections
+    log_error(LOG_DEBUG, "red_connect_relay_ssl");
     client->relay = red_connect_relay_ssl(interface, &client->instance->config.relayaddr,
                                       sclient->ssl,
                                       httpsc_read_cb,
                                       NULL,
                                       httpsc_event_cb, client, &tv);
     if (!client->relay) {
-        redsocks_log_errno(client, LOG_ERR, "red_connect_relay_ssl");
+        redsocks_log_errno(client, LOG_ERR, "error red_connect_relay_ssl");
         redsocks_drop_client(client);
         return -1;
     }

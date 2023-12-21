@@ -188,6 +188,7 @@ void httpc_read_cb(struct bufferevent *buffev, void *_arg)
 
 struct evbuffer *httpc_mkconnect(redsocks_client *client)
 {
+	redsocks_log_error(client, LOG_DEBUG, "httpc_mkconnect");
 	struct evbuffer *buff = NULL, *retval = NULL;
 	int len;
 
