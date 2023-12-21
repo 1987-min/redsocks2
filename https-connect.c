@@ -215,16 +215,17 @@ static void httpsc_event_cb(struct bufferevent *buffev, short what, void *_arg)
 static void httpsc_read_cb(struct bufferevent *buffev, void *_arg)
 {
     log_error(LOG_DEBUG, "httpsc_read_cb");
+
+
+    redsocks_client *client = _arg;
     static int tobuf_len = 32 * 1024;
 	char *tobuf = calloc(tobuf_len, 1);
-    redsocks_log_error(client, LOG_DEBUG, "linebuffer=%s",tobuf);
+    log_error(LOG_DEBUG, "linebuffer=%s",tobuf);
 	if (!tobuf) {
-		redsocks_log_error(client, LOG_ERR, "tobuf run out of memory");
+		log_error(LOG_ERR, "tobuf run out of memory");
 		redsocks_drop_client(client);
 		return;
 	}
-
-    redsocks_client *client = _arg;
 
     httpc_read_cb(buffev, _arg);
 
