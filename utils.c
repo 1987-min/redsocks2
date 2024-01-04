@@ -261,7 +261,7 @@ struct bufferevent* red_connect_relay_ssl(const char *ifname,
 
     error = connect(relay_fd, addr, addr_size(addr));
     if (error && errno != EINPROGRESS) {
-        log_errno(LOG_NOTICE, "connect");
+        log_errno(LOG_NOTICE, "connect fail");
         goto fail;
     }
     retval = bufferevent_openssl_filter_new(bufferevent_get_base(underlying),

@@ -1507,6 +1507,7 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
         else {
             log_errno(LOG_WARNING, "accept");
         }
+        log_errno(LOG_ERR, "lient_fd == -1)");
         goto fail;
     }
     self->accept_backoff_ms = 0;
@@ -1521,6 +1522,7 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
 
     error = getdestaddr(client_fd, &clientaddr, &myaddr, &destaddr);
     if (error) {
+         log_errno(LOG_WARNING, "getdestaddrerror");
         goto fail;
     }
 
@@ -1530,8 +1532,11 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
         goto fail;
     }
 
-    if (apply_tcp_keepalive(client_fd))
+    if (apply_tcp_keepalive(client_fd)){
+        og_errno(LOG_ERR, "apply_tcp_keepalive error");
         goto fail;
+    }
+        
 
     // everything seems to be ok, let's allocate some memory
     if (self->config.autoproxy)
@@ -1558,8 +1563,10 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
     if (self->config.autoproxy)
         autoproxy_subsys.init(client);
 
-    if (redsocks_time(&client->first_event) == ((time_t)-1))
+    if (redsocks_time(&client->first_event) == ((time_t)-1)){
+         redsocks_log_errno(client, LOG_ERR, "(time_t)-1)");
         goto fail;
+    }
 
     redsocks_touch_client(client);
 
@@ -1572,7 +1579,7 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
         BEV_OPT_CLOSE_ON_FREE  -- 释放bufferevent自动关闭底层接口(当bufferevent被释放以后, 文件描述符也随之被close)    
         BEV_OPT_THREADSAFE  -- 使bufferevent能够在多线程下是安全的*/
     if (!client->client) {
-        log_errno(LOG_ERR, "bufferevent_socket_new");
+        log_errno(LOG_ERR, "!client->client");
         goto fail;
     }
     bufferevent_setcb(client->client, NULL, NULL, redsocks_event_error, client);
@@ -1592,16 +1599,24 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
 
     redsocks_log_error(client, LOG_DEBUG, "accepted");
 
-    if (self->config.autoproxy && autoproxy_subsys.connect_relay)
+    if (self->config.autoproxy && autoproxy_subsys.connect_relay){
+        redsocks_log_error(client, LOG_DEBUG, "aaaaaaaaaaaaaaaaaaaaa");
         autoproxy_subsys.connect_relay(client);
+    }        
     else if (self->relay_ss->connect_relay)
+    {
+        redsocks_log_error(client, LOG_DEBUG, "bbbbbbbbbbbbbbbbbbbbbbbb");
         self->relay_ss->connect_relay(client);
-    else
+    }
+    else{
+        redsocks_log_error(client, LOG_DEBUG, "ccccccccccccccccccccc");
         redsocks_connect_relay(client);
-
+    }
+        
     return;
 
 fail:
+    redsocks_log_error(client, LOG_DEBUG, "accepted fail");
     if (client) {
         redsocks_drop_client(client);
     }
