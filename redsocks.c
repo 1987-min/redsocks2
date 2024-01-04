@@ -1533,7 +1533,7 @@ static void redsocks_accept_client(int fd, short what, void *_arg)
     }
 
     if (apply_tcp_keepalive(client_fd)){
-        og_errno(LOG_ERR, "apply_tcp_keepalive error");
+        log_errno(LOG_ERR, "apply_tcp_keepalive error");
         goto fail;
     }
         
