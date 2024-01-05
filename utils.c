@@ -308,7 +308,7 @@ fail:
         bufferevent_free(underlying);
     }
     if (relay_fd != -1){
-        log_error(LOG_DEBUG, "relay_fd != -1)");
+        log_error(LOG_DEBUG, "relay_fd != -1");
         redsocks_close(relay_fd);
     }
     return NULL;
