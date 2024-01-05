@@ -290,6 +290,7 @@ static int httpsc_connect_relay(redsocks_client *client)
         redsocks_drop_client(client);
         return -1;
     }
+    log_error(LOG_DEBUG, "red_connect_relay_ssl finish");
 
     return 0;
 }

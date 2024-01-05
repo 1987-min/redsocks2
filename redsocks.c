@@ -1232,6 +1232,7 @@ static int redsocks_socket_geterrno(redsocks_client *client, struct bufferevent 
         redsocks_log_errno(client, LOG_ERR, "red_socket_geterrno");
         return -1;
     }
+     redsocks_log_errno(client, LOG_ERR, "red_socket_geterrno====%d",pseudo_errno);
     return pseudo_errno;
 }
 

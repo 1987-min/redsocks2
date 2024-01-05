@@ -251,52 +251,66 @@ struct bufferevent* red_connect_relay_ssl(const char *ifname,
     struct bufferevent *underlying = NULL;
     int relay_fd = -1;
     int error;
-
+    log_error(LOG_DEBUG, "red_prepare_relay");
     underlying = red_prepare_relay(ifname, addr->ss_family, NULL, NULL, NULL, NULL);
     if (!underlying)
         goto fail;
+    log_error(LOG_DEBUG, "bufferevent_getfd");
     relay_fd = bufferevent_getfd(underlying);
-    if (timeout_write)
+    if (timeout_write){
+        log_error(LOG_DEBUG, "timeout_write");
         bufferevent_set_timeouts(underlying, NULL, timeout_write);
-
+    }
+    log_error(LOG_DEBUG, "connect(relay_fd, addr, addr_size(addr)");
     error = connect(relay_fd, addr, addr_size(addr));
     if (error && errno != EINPROGRESS) {
         log_errno(LOG_NOTICE, "connect fail");
         goto fail;
     }
+    log_error(LOG_DEBUG, "bufferevent_openssl_filter_new(bufferevent_get_base");
     retval = bufferevent_openssl_filter_new(bufferevent_get_base(underlying),
                                             underlying,
                                             ssl,
                                             BUFFEREVENT_SSL_CONNECTING,
                                             BEV_OPT_DEFER_CALLBACKS);
+    log_error(LOG_DEBUG, "if (!retval)");
     if (!retval) {
         log_errno(LOG_NOTICE, "bufferevent_openssl_filter_new");
         goto fail;
     }
-    if (timeout_write)
+    if (timeout_write){
+         log_error(LOG_DEBUG, "timeout_write 2");
         bufferevent_set_timeouts(retval, NULL, timeout_write);
-
+    }
     bufferevent_setcb(retval, readcb, writecb, errorcb, cbarg);
+    log_error(LOG_DEBUG, "bufferevent_setcb FINAL");
     if (writecb) {
+        log_error(LOG_DEBUG, "if (writecb)");
         error = bufferevent_enable(retval, EV_WRITE); // we wait for connection...
         if (error) {
             log_errno(LOG_ERR, "bufferevent_enable");
             goto fail;
         }
     }
+    log_error(LOG_DEBUG, "red_connect_relay_ssl FINAL");
     return retval;
 
 fail:
+    log_error(LOG_DEBUG, "red_connect_relay_ssl FAIL");
     if (retval) {
+        log_error(LOG_DEBUG, "if (retval)");
         bufferevent_disable(retval, EV_READ|EV_WRITE);
         bufferevent_free(retval);
     }
     if (underlying) {
+        log_error(LOG_DEBUG, "if (underlying)");
         bufferevent_disable(underlying, EV_READ|EV_WRITE);
         bufferevent_free(underlying);
     }
-    if (relay_fd != -1)
+    if (relay_fd != -1){
+        log_error(LOG_DEBUG, "relay_fd != -1)");
         redsocks_close(relay_fd);
+    }
     return NULL;
 }
 #endif
